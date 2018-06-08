@@ -1,5 +1,3 @@
-#include "./mplib/mpmod.h"
-#include "./json/cJSON.h"
 #include "mpmsg.h"
 
 extern int cJSON_GetKeyValue(const cJSON *const object, const char *key, void *value)
@@ -62,7 +60,7 @@ extern int cJSON_GetKeyValue(const cJSON *const object, const char *key, void *v
     return -1;
 }
 
-extern int mpParseMessage(const char *const message, char *msgIDStr)
+extern int mpParseMessage(const char *const message)
 {
     cJSON *objRoot, *msgID, *msgType;
     char *ID, *type;
@@ -81,7 +79,6 @@ extern int mpParseMessage(const char *const message, char *msgIDStr)
         return -1;
     if((ID = cJSON_GetStringValue(msgID)) == NULL)
         return -1;
-    memcpy(msgIDStr, ID, MP_MAXID);
 
     return hashSum;
 }

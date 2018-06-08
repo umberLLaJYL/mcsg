@@ -23,31 +23,30 @@ static int inetServerInitialize(const int type, struct svropt_inet *__restrict__
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if((serverOption->so_mode == MP_INET_DFLT) || (serverOption->so_mode == MP_INET_TCPONLY)){
-        if((serverOption->so_tcpfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    if((serverOption->soi_mode == MP_INET_DFLT) || (serverOption->soi_mode == MP_INET_TCPONLY)){
+        if((serverOption->soi_tcpfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
             return ESVRSOCK;
-        serverAddress.sin_port = htons(serverOption->so_tcpport);
+        serverAddress.sin_port = htons(serverOption->soi_tcpport);
 
-        if(setsockopt(serverOption->so_tcpfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)))
+        if(setsockopt(serverOption->soi_tcpfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)))
             return ESVRSOCKOPT;
-        if(bind(serverOption->so_tcpfd, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)))
+        if(bind(serverOption->soi_tcpfd, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)))
             return ESVRBIND;
-        if(listen(serverOption->so_tcpfd, MP_BACKLOG))
+        if(listen(serverOption->soi_tcpfd, MP_BACKLOG))
             return ESVRLISTEN;
-        if((fdFlag = fcntl(serverOption->so_tcpfd, F_GETFL, 0)) < 0)
+        if((fdFlag = fcntl(serverOption->soi_tcpfd, F_GETFL, 0)) < 0)
             return ESVRSOCKOPT;
-        if(fcntl(serverOption->so_tcpfd, F_SETFL, fdFlag|O_CLOEXEC) < 0)
+        if(fcntl(serverOption->soi_tcpfd, F_SETFL, fdFlag|O_CLOEXEC) < 0)
             return ESVRSOCKOPT;
     }
-    if((serverOption->so_mode == MP_INET_DFLT) || (serverOption->so_mode == MP_INET_UDPONLY)){
-        if((serverOption->so_udpfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+    if((serverOption->soi_mode == MP_INET_DFLT) || (serverOption->soi_mode == MP_INET_UDPONLY)){
+        if((serverOption->soi_udpfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
             return ESVRSOCK;
-        serverAddress.sin_port = htons(serverOption->so_udpport);
+        serverAddress.sin_port = htons(serverOption->soi_udpport);
 
-        if(bind(serverOption->so_udpfd, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)))
+        if(bind(serverOption->soi_udpfd, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_in)))
             return ESVRBIND;
     }
-
     return 0;
 }
 
@@ -64,22 +63,22 @@ static int localServerInitialize(const int type, struct svropt_local *__restrict
             return ESVRTYPE;
     }
 
-    if((serverOption->so_svrfd = socket(AF_LOCAL, type, 0)) < 0)
+    if((serverOption->sol_svrfd = socket(AF_LOCAL, type, 0)) < 0)
         return ESVRSOCK;
-    unlink(serverOption->so_parh);
+    unlink(serverOption->sol_parh);
     memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sun_family = AF_LOCAL;
-    strcpy(serverAddress.sun_path, serverOption->so_parh);
+    strcpy(serverAddress.sun_path, serverOption->sol_parh);
 
     if(type == SOCK_STREAM){
-        if(setsockopt(serverOption->so_svrfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)))
+        if(setsockopt(serverOption->sol_svrfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)))
             return ESVRSOCKOPT;        
     }
-    if(bind(serverOption->so_svrfd, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_un)))
+    if(bind(serverOption->sol_svrfd, (struct sockaddr *)&serverAddress, sizeof(struct sockaddr_un)))
         return ESVRBIND;
 
     if(type == SOCK_STREAM){
-        if(listen(serverOption->so_svrfd, MP_BACKLOG))
+        if(listen(serverOption->sol_svrfd, MP_BACKLOG))
             return ESVRLISTEN;
     }
     return 0;
@@ -108,47 +107,47 @@ extern int mpServerInitialize(int family, const int type, void *__restrict__ ser
     return 0;
 }
 
-static int mpDefaultServer(const struct svropt_inet const *opt,  _DIR clientServiceDIR)
+static int mpDefaultServer(const struct svropt_inet const *opt, _DIR clientServiceDIR)
 {
     _FD clientFD;
     fd_set readSet;
     pid_t clientPID;
-    char ip[INET_ADDRSTRLEN], port[10], tcpClientFDInChar[10], udpBuffer[MP_MAXLINE];
+    char ip[INET_ADDRSTRLEN], peerAddr[INET_ADDRSTRLEN+10], tcpClientFDInChar[10], udpBuffer[MP_MAXLINE];
     struct sockaddr_in tcpClientAddress, udpClientAddress;
     socklen_t socketLen;
 
     FD_ZERO(&readSet);
     for(;;){
-        FD_SET(opt->so_tcpfd, &readSet);
-        FD_SET(opt->so_udpfd, &readSet);
-        if(select(opt->so_tcpfd>opt->so_udpfd?opt->so_tcpfd:opt->so_udpfd+1, &readSet, NULL, NULL, NULL) < 0){
+        FD_SET(opt->soi_tcpfd, &readSet);
+        FD_SET(opt->soi_udpfd, &readSet);
+        if(select((opt->soi_tcpfd>opt->soi_udpfd?opt->soi_tcpfd:opt->soi_udpfd)+1, &readSet, NULL, NULL, NULL) < 0){
             if(errno == EINTR)
                 continue;
             else
                 return ESVRWAIT;
         }
-
-        socketLen = sizeof(tcpClientAddress);
-        if(FD_ISSET(opt->so_tcpfd, &readSet)){
-            if((clientFD = accept(opt->so_tcpfd, (struct sockaddr *)&tcpClientAddress, &socketLen)) < 0){
+        if(FD_ISSET(opt->soi_tcpfd, &readSet)){
+            socketLen = sizeof(tcpClientAddress);
+            if((clientFD = accept(opt->soi_tcpfd, (struct sockaddr *)&tcpClientAddress, &socketLen)) < 0){
                 if(errno == EINTR)
                     continue;
                 else
                     return ESVRWAIT;
             }
-            snprintf(tcpClientFDInChar, sizeof(tcpClientFDInChar), "%d", clientFD);
-            snprintf(port, sizeof(port), "%d", tcpClientAddress.sin_port);
             inet_ntop(AF_INET, &tcpClientAddress.sin_addr, ip, sizeof(ip));
+            snprintf(tcpClientFDInChar, sizeof(tcpClientFDInChar), "%d", clientFD);
+            snprintf(peerAddr, sizeof(peerAddr), "%s:%d", ip, tcpClientAddress.sin_port);
 
             if((clientPID = fork()) == 0)
-                if(execlp(clientServiceDIR, tcpClientFDInChar, ip, port, (char *)0))
+                if(execlp(clientServiceDIR, "[inetser]", tcpClientFDInChar, peerAddr, (char *)0))
                     exit(ESVRSER);
             close(clientFD);
             continue;
         }
-        if(FD_ISSET(opt->so_udpfd, &readSet)){
+        if(FD_ISSET(opt->soi_udpfd, &readSet)){
+            socketLen = sizeof(udpClientAddress);
             memset(udpBuffer, 0, sizeof(udpBuffer));
-            if(recvfrom(opt->so_udpfd, udpBuffer, sizeof(udpBuffer), 0, (struct sockaddr *)&udpClientAddress, &socketLen) < 0){
+            if(recvfrom(opt->soi_udpfd, udpBuffer, sizeof(udpBuffer), 0, (struct sockaddr *)&udpClientAddress, &socketLen) < 0){
                 if(errno == EINTR)
                     continue;
                 else

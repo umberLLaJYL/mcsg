@@ -72,13 +72,15 @@ typedef in_addr_t _IP, _GW, _SM;
 typedef in_port_t _PORT;
 
 struct svropt_inet{
-	int so_mode;
-	_FD so_tcpfd, so_udpfd;
-	int so_tcpport, so_udpport;
+	int (*soi_procfunc)(const char *__restrict__, ...);
+	int soi_mode;
+	int soi_tcpport, soi_udpport;
+	_FD soi_tcpfd, soi_udpfd;
 };
 struct svropt_local{
-	_FD so_svrfd;
-	char so_parh[104];
+	int (*sol_procfunc)(const char *__restrict__, ...);
+	char sol_parh[104];
+	_FD sol_svrfd;
 };
 
 #pragma pack(1)

@@ -19,9 +19,28 @@ struct logopt{
     char lo_path[104];
 };
 
+int (*fptr)(int *, ...);
+
+int test(int *a, ...)
+{
+    int b;
+    char *c;
+
+    va_list ap;
+
+    va_start(ap, a);
+    b = va_arg(ap, int);
+    c = va_arg(ap, char *);
+    printf("a %d\n", *a);
+    printf("b %d\n", b);
+    printf("c %s\n", c);
+    va_end(ap);
+}
+
 int main(int argc, char *argv[])
 {
-    int i, opt;
+    pid_t pid;
+    int i = 9, opt;
     char *port;
     struct logopt logoption;
     static struct option options[] = {
@@ -33,7 +52,14 @@ int main(int argc, char *argv[])
     // for(i = 0; i < argc; i++){
     //     printf("argv%i: %s\n", i, argv[i]);
     // }
+
     
+    if((pid = fork()) == 0){
+        if(execlp("./argstest", (char *)fptr, (char *)0))
+            perror("execlp");
+    }
+    printf("p: 0x%x\n", &fptr);
+
     while((opt = getopt_long(argc, argv, "cd:e::", options, NULL)) != -1){
         switch(opt){
             case 'a':{

@@ -119,12 +119,12 @@ int main(int argc, char *argv[])
     if((logFD = open(logOption.lo_path, O_RDWR|O_APPEND)) < 0)
         return -1;
 
-    strncpy(serverOption.so_parh, MPLOGD_SOCK, sizeof(serverOption.so_parh)); 
+    strncpy(serverOption.sol_parh, MPLOGD_SOCK, sizeof(serverOption.sol_parh)); 
     if((errorCode = mpServerInitialize(AF_LOCAL, SOCK_DGRAM, &serverOption)) < 0)
         return errorCode;
     for(;;){
         sockLen = sizeof(serverAddress);
-        if(recvfrom(serverOption.so_svrfd, &logBuf, sizeof(logBuf), 0, (struct sockaddr *)&serverAddress, &sockLen) < 0)
+        if(recvfrom(serverOption.sol_svrfd, &logBuf, sizeof(logBuf), 0, (struct sockaddr *)&serverAddress, &sockLen) < 0)
             return -1;
 
         printf("%s", logBuf.logBuffer);

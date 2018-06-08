@@ -5,10 +5,10 @@ static int pollingServer(const void const *svrfd, void *args)
 {
     _FD clientFD, client[MP_MAXCLIENT];
     fd_set readSet, grpSet;
-    struct sockaddr_in clientAddress;
     int idx, maxFD, serverFD, numReady, fdFlag, dataLen;
     const int clientIdle = -1;
     char data[MP_MAXLINE];
+    struct sockaddr_in clientAddress;
     socklen_t socketLen;
 
     if(args != (void *)0)
@@ -97,9 +97,9 @@ int main(int argc, char *argv[])
     if(mpLockPossess("/var/run/mpser.pid"))
         mpQuit(1, "mpser is already running");
 
-    strncpy(serverOprion.so_parh, MP_LOCALSVRDIR, sizeof(MP_LOCALSVRDIR));
+    strncpy(serverOprion.sol_parh, MP_LOCALSVRDIR, sizeof(MP_LOCALSVRDIR));
     if((errorCode = mpServerInitialize(AF_LOCAL, SOCK_STREAM, &serverOprion)) < 0)
         mpExit("mpser initialize fail: %d", errorCode);
-    if((errorCode = mpServerStart((_FD *)&serverOprion.so_svrfd, (void *)0, pollingServer)) < 0)
+    if((errorCode = mpServerStart((_FD *)&serverOprion.sol_svrfd, (void *)0, pollingServer)) < 0)
         mpQuit(errorCode, "mpser shutdown unexpected: %d\n", errorCode);
 }

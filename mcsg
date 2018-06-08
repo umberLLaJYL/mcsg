@@ -1,0 +1,10 @@
+#!/bin/bash
+
+case "$1" in
+    "-v") echo "$1";;
+    "start") echo "$1"
+        if [ ! -n "$2" ]; then
+            echo wwww
+        fi
+    ;;
+esac

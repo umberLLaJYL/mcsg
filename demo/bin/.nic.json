@@ -1,0 +1,16 @@
+{
+	"eth0":	{
+		"status":	"enable",
+		"nic":	"eth0",
+		"IP":	"192.168.1.147",
+		"gateway":	"192.168.1.1",
+		"netmask":	"255.255.255.0",
+		"port":	4001
+	},
+	"eth1":	{
+		"status":	"disable"
+	},
+	"can":	{
+		"status":	"disable"
+	}
+}

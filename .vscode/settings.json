@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "mp_dev.h": "c",
+        "mcsg.h": "c",
+        "mplib.h": "c",
+        "cjson.h": "c",
+        "mpio.h": "c",
+        "murmurhash3.h": "c",
+        "mpmsg.h": "c",
+        "mainserver.h": "c",
+        "errno.h": "c",
+        "logtest.h": "c",
+        "mplog.h": "c",
+        "mpmod.h": "c",
+        "mpser.h": "c"
+    }
+}

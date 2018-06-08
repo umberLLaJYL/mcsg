@@ -81,7 +81,7 @@ extern struct msgln *mpMessagePase(const char *msg, struct msgln *list)
 
 int main(int ac, char *av[])
 {
-    struct msgln *mlist;
+    // struct msgln *mlist;
 
-    printf("%lu\n", sizeof(int));
+    // printf("%lu\n", sizeof(int));
 }

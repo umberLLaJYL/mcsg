@@ -8,7 +8,7 @@ struct logopt{
     char lo_path[104];
 };
 
-static void configInitialize(_DIR configFile, struct logopt *__restrict__ mplogdOption)
+static void configInitialize(_DIR configFile, struct logopt *__restrict mplogdOption)
 {
     char *cp, ip[INET_ADDRSTRLEN], configuration[MP_MAXLINE];
     FILE *confFP;
@@ -42,8 +42,7 @@ static void configInitialize(_DIR configFile, struct logopt *__restrict__ mplogd
             if(strlen(cp) > 104)
                 mpQuit(1, "mplogd: initialize fail: log directory too long\n");
             strncpy(mplogdOption->lo_path, cp, strlen(cp)-1);
-        }
-        else if(strncmp(configuration, "$MaximumFileSize", 15) == 0){
+        }else if(strncmp(configuration, "$MaximumFileSize", 15) == 0){
             cp = configuration;
             while((*cp > '9') || (*cp < '0'))
                 cp++;

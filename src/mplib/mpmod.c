@@ -5,7 +5,7 @@
 /* input: NIC: NIC that nedd to be initialized.                       */
 /* output: error code.                                                */
 /**********************************************************************/
-static int inetServerInitialize(const int type, struct svropt_inet *__restrict__ serverOption)
+static int inetServerInitialize(const int type, struct svropt_inet *__restrict serverOption)
 {
     int fdFlag, enable = 1;
     struct sockaddr_in serverAddress;
@@ -13,6 +13,7 @@ static int inetServerInitialize(const int type, struct svropt_inet *__restrict__
     switch(type){
         case SOCK_DGRAM:
         case SOCK_STREAM:
+        case SOCK_MIX:
         case SOCK_RAW:
             break;
         default:
@@ -23,7 +24,7 @@ static int inetServerInitialize(const int type, struct svropt_inet *__restrict__
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if((serverOption->soi_mode == MP_INET_DFLT) || (serverOption->soi_mode == MP_INET_TCPONLY)){
+    if((serverOption->soi_mode != MP_INET_UDPONLY)){
         if((serverOption->soi_tcpfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
             return ESVRSOCK;
         serverAddress.sin_port = htons(serverOption->soi_tcpport);
@@ -39,7 +40,7 @@ static int inetServerInitialize(const int type, struct svropt_inet *__restrict__
         if(fcntl(serverOption->soi_tcpfd, F_SETFL, fdFlag|O_CLOEXEC) < 0)
             return ESVRSOCKOPT;
     }
-    if((serverOption->soi_mode == MP_INET_DFLT) || (serverOption->soi_mode == MP_INET_UDPONLY)){
+    if((serverOption->soi_mode != MP_INET_TCPONLY)){
         if((serverOption->soi_udpfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
             return ESVRSOCK;
         serverAddress.sin_port = htons(serverOption->soi_udpport);
@@ -50,7 +51,7 @@ static int inetServerInitialize(const int type, struct svropt_inet *__restrict__
     return 0;
 }
 
-static int localServerInitialize(const int type, struct svropt_local *__restrict__ serverOption)
+static int localServerInitialize(const int type, struct svropt_local *__restrict serverOption)
 {
     int enable = 1;
     struct sockaddr_un serverAddress;
@@ -84,13 +85,12 @@ static int localServerInitialize(const int type, struct svropt_local *__restrict
     return 0;
 }
 
-extern int mpServerInitialize(int family, const int type, void *__restrict__ serverOption)
+extern int mpServerInitialize(int family, const int type, void *__restrict serverOption)
 {
     int errorCode;
 
     switch(family){
-        case AF_INET:
-        case MP_AF_INETMIX:{
+        case AF_INET:{
             if((errorCode = inetServerInitialize(type, serverOption)) < 0)
                 return errorCode;
             break;
@@ -103,71 +103,16 @@ extern int mpServerInitialize(int family, const int type, void *__restrict__ ser
         case AF_INET6:
         default:
             return ESVRNFAMILY;
-    }    
-    return 0;
-}
-
-static int mpDefaultServer(const struct svropt_inet const *opt, _DIR clientServiceDIR)
-{
-    _FD clientFD;
-    fd_set readSet;
-    pid_t clientPID;
-    char ip[INET_ADDRSTRLEN], peerAddr[INET_ADDRSTRLEN+10], tcpClientFDInChar[10], udpBuffer[MP_MAXLINE];
-    struct sockaddr_in tcpClientAddress, udpClientAddress;
-    socklen_t socketLen;
-
-    FD_ZERO(&readSet);
-    for(;;){
-        FD_SET(opt->soi_tcpfd, &readSet);
-        FD_SET(opt->soi_udpfd, &readSet);
-        if(select((opt->soi_tcpfd>opt->soi_udpfd?opt->soi_tcpfd:opt->soi_udpfd)+1, &readSet, NULL, NULL, NULL) < 0){
-            if(errno == EINTR)
-                continue;
-            else
-                return ESVRWAIT;
-        }
-        if(FD_ISSET(opt->soi_tcpfd, &readSet)){
-            socketLen = sizeof(tcpClientAddress);
-            if((clientFD = accept(opt->soi_tcpfd, (struct sockaddr *)&tcpClientAddress, &socketLen)) < 0){
-                if(errno == EINTR)
-                    continue;
-                else
-                    return ESVRWAIT;
-            }
-            inet_ntop(AF_INET, &tcpClientAddress.sin_addr, ip, sizeof(ip));
-            snprintf(tcpClientFDInChar, sizeof(tcpClientFDInChar), "%d", clientFD);
-            snprintf(peerAddr, sizeof(peerAddr), "%s:%d", ip, tcpClientAddress.sin_port);
-
-            if((clientPID = fork()) == 0)
-                if(execlp(clientServiceDIR, "[inetser]", tcpClientFDInChar, peerAddr, (char *)0))
-                    exit(ESVRSER);
-            close(clientFD);
-            continue;
-        }
-        if(FD_ISSET(opt->soi_udpfd, &readSet)){
-            socketLen = sizeof(udpClientAddress);
-            memset(udpBuffer, 0, sizeof(udpBuffer));
-            if(recvfrom(opt->soi_udpfd, udpBuffer, sizeof(udpBuffer), 0, (struct sockaddr *)&udpClientAddress, &socketLen) < 0){
-                if(errno == EINTR)
-                    continue;
-                else
-                    return ESVRWAIT;
-            }
-            printf("udp rcv: %s\n", udpBuffer);
-        }
     }
+    return 0;
 }
 
 extern int mpServerStart(const void const *opt, void *__restrict args, int (*serverFunc)(const void const *opt, void *__restrict argv))
 {
     int errorCode;
 
-    if((serverFunc == MP_NULLSVR) || (serverFunc == NULL))
+    if(serverFunc == NULL)
         return 0;
-    else if(serverFunc == MP_DFLTSVR){
-        if((errorCode = mpDefaultServer((struct svropt_inet *)opt, (char *)args)))
-            return errorCode;
-    }
 
     errorCode = serverFunc(opt, args);
     return errorCode;

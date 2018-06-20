@@ -27,7 +27,7 @@ struct msgln{
 	unsigned int ml_lbrace;
 	unsigned int ml_wtime;
 	int ml_flag;
-	char ml_data[MP_MAXLINE];
+	char ml_buf[MP_MAXLINE];
 };
 
 extern int mpGenerateMessage(char *__restrict messageBuffer, const char *const type, ...);

@@ -16,72 +16,85 @@
 #include <errno.h>
 #include <stdint.h>
 #include <fcntl.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <termios.h>
 
-#include "../src/json/cJSON.h"
-#include "../src/mpmsg.h"
+// #include "../src/json/cJSON.h"
+// #include "../src/mpmsg.h"
 
-extern struct msgln *mpGenerateWorkQueue(void)
-{
-    struct msgln *head;
+// extern struct msgln *mpGenerateWorkQueue(void)
+// {
+//     struct msgln *head;
 
-    if((head = (struct msgln *)malloc(sizeof(struct msgln))) == NULL)
-        return NULL;
-    head->ml_next = NULL;
+//     if((head = (struct msgln *)malloc(sizeof(struct msgln))) == NULL)
+//         return NULL;
+//     head->ml_next = NULL;
 
-    return head;
-}
+//     return head;
+// }
 
-extern struct msgln *mpMessageReg(struct msgln *list, const char *msg)
-{
-    unsigned int lnid = 0;
-    struct msgln *node, *tail;
+// extern struct msgln *mpMessageReg(struct msgln *list, const char *msg)
+// {
+//     unsigned int lnid = 0;
+//     struct msgln *node, *tail;
     
-    node = list;
-    while(node->ml_next){
-        lnid++;
-        node = node->ml_next;
-    }
-    if((tail = (struct msgln *)malloc(sizeof(struct msgln))) == NULL)
-        return NULL;
+//     node = list;
+//     while(node->ml_next){
+//         lnid++;
+//         node = node->ml_next;
+//     }
+//     if((tail = (struct msgln *)malloc(sizeof(struct msgln))) == NULL)
+//         return NULL;
 
-    tail->ml_lnid = lnid;
+//     tail->ml_lnid = lnid;
     
-    tail->ml_next = NULL;
-    node->ml_next = tail;
+//     tail->ml_next = NULL;
+//     node->ml_next = tail;
 
-    memcpy(tail->ml_data, msg, MP_MAXLINE);
-}
+//     memcpy(tail->ml_buf, msg, MP_MAXLINE);
+// }
 
 
-extern struct msgln *mpMessagePase(const char *msg, struct msgln *list)
-{
-    char *cp;
-    int lBrace = 0, rBrace = 0;
-    int maxLen, ret;
-    struct msgln *node;
+// extern struct msgln *mpMessagePase(const char *msg, struct msgln *list)
+// {
+//     char *cp;
+//     int lBrace = 0, rBrace = 0;
+//     int maxLen, ret;
+//     struct msgln *node;
 
-    node = list->ml_next;
+//     node = list->ml_next;
 
-    cp = node->ml_data;
-    maxLen = strlen(node->ml_data);
-    while(--maxLen){
-        if(*cp == '{')
-            lBrace++;
-        else if(*cp == '}')
-            rBrace++;
-        cp++;
-    }
-    node->ml_lbrace += lBrace;
-    node->ml_rbrace += rBrace;
+//     cp = node->ml_buf;
+//     maxLen = strlen(node->ml_buf);
+//     while(--maxLen){
+//         if(*cp == '{')
+//             lBrace++;
+//         else if(*cp == '}')
+//             rBrace++;
+//         cp++;
+//     }
+//     node->ml_lbrace += lBrace;
+//     node->ml_rbrace += rBrace;
     
-    if((node->ml_lbrace != node->ml_rbrace) && (node->ml_lbrace)){
-        node->ml_flag = 0;
-    }    
-}
+//     if((node->ml_lbrace != node->ml_rbrace) && (node->ml_lbrace)){
+//         node->ml_flag = 0;
+//     }    
+// }
 
 int main(int ac, char *av[])
 {
-    // struct msgln *mlist;
+    int speed, i;
+    struct timeval timev;
+    fd_set readSet;
 
-    // printf("%lu\n", sizeof(int));
+    FD_ZERO(&readSet);
+    FD_SET(0, &readSet);
+    
+    timev.tv_sec = 5;
+    timev.tv_usec = 0;
+
+    printf("%ld\n", timev.tv_sec);
+    select(1, &readSet, NULL, NULL, &timev);
+    printf("s: %ld\nus: %ld\n", timev.tv_sec, timev.tv_usec);
 }

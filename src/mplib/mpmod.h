@@ -3,14 +3,12 @@
 
 #include <sys/wait.h>
 #include <sys/un.h>
-#include <stdint.h>
 #include <time.h>
 #include <sys/resource.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
-#include <pthread.h>
 #include <getopt.h>
 
 #include "mpio.h"
@@ -38,10 +36,7 @@
 #define MP_SETTINGDIR "./settings.json"
 #define MP_TMPDIR "/tmp/mcsg/"
 
-#define MP_NULLSVR ((int (*)(const void const *, void *args))0)
-#define MP_DFLTSVR ((int (*)(const void const *, void *args))1)
-
-#define MP_AF_INETMIX AF_MAX+1
+#define SOCK_MIX 10
 
 #define MP_INET_DFLT    0
 #define MP_INET_TCPONLY 1
@@ -72,13 +67,13 @@ typedef in_addr_t _IP, _GW, _SM;
 typedef in_port_t _PORT;
 
 struct svropt_inet{
-	int (*soi_procfunc)(const char *__restrict__, ...);
+	int (*soi_procfunc)(const char *__restrict, ...);
 	int soi_mode;
 	int soi_tcpport, soi_udpport;
 	_FD soi_tcpfd, soi_udpfd;
 };
 struct svropt_local{
-	int (*sol_procfunc)(const char *__restrict__, ...);
+	int (*sol_procfunc)(const char *__restrict, ...);
 	char sol_parh[104];
 	_FD sol_svrfd;
 };
@@ -166,7 +161,7 @@ typedef union{
 /****************************************/
 /*         function declaration         */
 /****************************************/
-extern _FD mpServerInitialize(int family, const int type, void *__restrict__ serverOption);
+extern _FD mpServerInitialize(int family, const int type, void *__restrict serverOption);
 extern int mpServerStart(const void const *opt, void *__restrict args, int (*serverFunc)(const void const *opt, void *__restrict argv));
 extern void (*mpSignal(int actSignal, void (*func)(int)))(int);
 extern int mpDaemonize(void);

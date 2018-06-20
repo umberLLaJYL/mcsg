@@ -24,7 +24,7 @@ static void optionInitialize(int argc, char *argv[], struct svropt_inet *__restr
     };
     
     memset(serverOption, 0, sizeof(struct svropt_inet));
-    while((opt = getopt_long(argc, argv, "v", options, NULL)) != -1){
+    while((opt = getopt_long(argc, argv, "v?", options, NULL)) != -1){
         switch(opt){
             case 'v':{
                 

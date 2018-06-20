@@ -69,7 +69,7 @@ static int mixServer(const struct svropt_inet const *option, const struct svrarg
     socklen_t socketLen;
 
     maxFD = option->soi_tcpfd>option->soi_udpfd?option->soi_tcpfd:option->soi_udpfd;
-    // maxFD = (maxFD>args->sa_lfd?maxFD:args->sa_lfd)+1;
+    maxFD = (maxFD>args->sa_lfd?maxFD:args->sa_lfd)+1;
     FD_ZERO(&readSet);
     for(;;){
         if(option->soi_tcpfd)

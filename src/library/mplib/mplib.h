@@ -144,9 +144,9 @@ typedef struct iContril{
 }Control;
 
 typedef struct MPServer{
-    void (*server)(Task *task);
-    void (*operater)(Control *subgroup);
-    void (*executor)(Control *subgroup, Task *task);
+    void (*server)(struct MPServer *mpsvr);
+    void (*operater)(struct MPServer *mpsvr);
+    void (*executor)(struct MPServer *mpsvr);
     Control *subgroup;
     Task *task;
     char rule[4096];

@@ -88,7 +88,7 @@ static int integrated(void)
     }
 }
 
-extern MPsvr *MpsvrCreate(MPsvr *__restrict impsvr)
+extern MPsvr *MPsvrConstruct(MPsvr *__restrict impsvr)
 {
     MPsvr *mpsvr = impsvr;
 
@@ -96,49 +96,15 @@ extern MPsvr *MpsvrCreate(MPsvr *__restrict impsvr)
         return NULL;
 
     mpsvr->server = integrated;
+    mpsvr->executor = executor;
 
     return mpsvr;
 }
 
-// static struct taskln *mpGenerateTaskQueue(void)
-// {
-//     struct taskln *head;
+extern void MPsvrDestruct(MPsvr *__restrict impsvr)
+{
+    if(impsvr == NULL)
+        return;
 
-//     if((head = (struct taskln *)malloc(sizeof(struct taskln))) == NULL)
-//         return NULL;
-//     head->t_next = NULL;
-
-//     return head;
-// }
-
-// static struct msgln *mpAssignTask(struct taskln *list, const char *msg)
-// {
-//     unsigned int lnid = 0;
-//     struct taskln *node, *tail;
-    
-//     node = list;
-//     while(node->t_next){
-//         lnid++;
-//         node = node->t_next;
-//     }
-//     if((tail = (struct taskln *)malloc(sizeof(struct taskln))) == NULL)
-//         return NULL;
-
-//     tail->ml_lnid = lnid;
-    
-//     tail->ml_next = NULL;
-//     node->ml_next = tail;
-
-//     memcpy(tail->ml_buf, msg, MP_MAXLINE);
-// }
-
-// void *cothread(void *args)
-// {
-//     struct taskln *task;
-
-//     sleep(1);
-
-//     task = (struct taskln*)args;
-
-//     pthread_exit(NULL);
-// }
+    return;
+}

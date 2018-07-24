@@ -62,17 +62,6 @@ extern Device *DeviceCreate(Subgroup *__restrict idevice)
     return subgroup;
 }
 
-extern void MpsvrDelete(Mpsvr *__restrict impsvr)
-{
-    if(impsvr == NULL)
-        return;
-
-    if(impsvr->task != NULL)
-        free(impsvr->task);
-
-    return;
-}
-
 extern void SubgroupDelete(Subgroup *__restrict isubgroup)
 {
     if(isubgroup == NULL)

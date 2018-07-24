@@ -9,9 +9,9 @@ int main(int argc, char *argv[])
     mpsvr->subgroup = subgroup;
     mpsvr->task = task;
 
-    mpsvr->server(mpsvr->task);
-    mpsvr->operater(mpsvr->subgroup);
-    mpsvr->executor(mpsvr->subgroup, mpsvr->task);
+    mpsvr->server(mpsvr);
+    mpsvr->operater(mpsvr);
+    mpsvr->executor(mpsvr);
 
     delete(Control, subgroup);
     delete(Task, task);

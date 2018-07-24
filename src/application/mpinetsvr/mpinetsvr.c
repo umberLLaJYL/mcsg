@@ -4,8 +4,8 @@
 #include "../daemon/mplog.h"
 
 struct svrargs{
-    char sa_dir[104];
     _FD sa_lfd;
+    char sa_dir[104];
 };
 
 void clearUp(int singo)
@@ -84,7 +84,7 @@ static int mixServer(const struct svropt_inet const *option, const struct svrarg
             else
                 return ESVRWAIT;
         }
-        if(option->soi_mode != MP_INET_UDPONLY){
+        if(option->soi_tcpfd){
             if(FD_ISSET(option->soi_tcpfd, &readSet)){
                 socketLen = sizeof(tcpClientAddress);
                 if((clientFD = accept(option->soi_tcpfd, (struct sockaddr *)&tcpClientAddress, &socketLen)) < 0){
@@ -106,7 +106,7 @@ static int mixServer(const struct svropt_inet const *option, const struct svrarg
                 continue;
             }
         }
-        if(option->soi_mode != MP_INET_TCPONLY){
+        if(option->soi_udpfd){
             if(FD_ISSET(option->soi_udpfd, &readSet)){
                 socketLen = sizeof(udpClientAddress);
                 memset(udpBuffer, 0, sizeof(udpBuffer));
@@ -166,6 +166,7 @@ int main(int argc, char *argv[])
     if(connect(svrArgs.sa_lfd, (struct sockaddr *)&localClientAddress, sizeof(localClientAddress)))
         mpExit("mpinetsvr can not connect to local server");
     strcpy(svrArgs.sa_dir, "./bin/.inetser");
+    
     if((errorCode = mixServer(&serverOprion, &svrArgs)) < 0)
         mpQuit(1, "mpinetsvr shutdown unexpected: %d\n", errorCode);
 }

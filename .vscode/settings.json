@@ -12,6 +12,10 @@
         "logtest.h": "c",
         "mplog.h": "c",
         "mpmod.h": "c",
-        "mpser.h": "c"
+        "mpser.h": "c",
+        "limits": "c",
+        "type_traits": "c",
+        "test.h": "c",
+        "bitset": "c"
     }
 }

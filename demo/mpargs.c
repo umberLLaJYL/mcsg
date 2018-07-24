@@ -11,6 +11,16 @@
 #include <pthread.h>
 #include <getopt.h>
 
+// #define container_of(ptr, type, member)({ \
+//             const typeof(((type *)0)->member) *__mptr = (ptr); \
+//             (type *)((char *)__mptr - offsetof(type, member)); \
+//         })
+// #define container_of(ptr, type, member) ({                      \
+//         const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+//         (type *)( (char *)__mptr - __offsetof(type,member) );})
+
+#define new(obj, opt...) obj##test(obj,##opt)
+
 struct logopt{
     int lo_mode;
     int lo_port;
@@ -19,30 +29,27 @@ struct logopt{
     char lo_path[104];
 };
 
-int (*fptr)(int *, ...);
-
-int test(int *a, ...)
+int svrtest(int a, int b)
 {
-    int b;
-    char *c;
-
-    va_list ap;
-
-    va_start(ap, a);
-    b = va_arg(ap, int);
-    c = va_arg(ap, char *);
-    printf("a %d\n", *a);
-    printf("b %d\n", b);
-    printf("c %s\n", c);
-    va_end(ap);
+    printf("svr %d\n", a);
+    printf("opt %d\n", b);
 }
+
+int sertest(int a, int b)
+{
+    printf("ser %d\n", a);
+    printf("opt %d\n", b);
+}
+
+int svr = 9;
+int ser = 8;
 
 int main(int argc, char *argv[])
 {
     pid_t pid;
     int i = 9, opt;
     char *port;
-    struct logopt logoption;
+    struct logopt logoption, *teststr;
     static struct option options[] = {
         {"default", 2, NULL, 'a'},
         {"tcponly", 2, NULL, 'b'}
@@ -52,13 +59,16 @@ int main(int argc, char *argv[])
     // for(i = 0; i < argc; i++){
     //     printf("argv%i: %s\n", i, argv[i]);
     // }
+    teststr = malloc(sizeof(struct logopt));
+    // memset(teststr, 0, sizeof(teststr));
+    teststr->lo_port = 0;
+    if(&teststr->lo_port == NULL)
+        printf("ddddd\n");
 
-    
-    if((pid = fork()) == 0){
-        if(execlp("./argstest", (char *)fptr, (char *)0))
-            perror("execlp");
-    }
-    printf("p: 0x%x\n", &fptr);
+    if(argc == 2)
+        new(svr, argc);
+    else if(argc == 3)
+        new(ser, argc);
 
     while((opt = getopt_long(argc, argv, "cd:e::", options, NULL)) != -1){
         switch(opt){

@@ -72,11 +72,6 @@ struct svropt_inet{
 	int soi_tcpport, soi_udpport;
 	_FD soi_tcpfd, soi_udpfd;
 };
-struct svropt_local{
-	int (*sol_procfunc)(const char *__restrict, ...);
-	char sol_parh[104];
-	_FD sol_svrfd;
-};
 
 #pragma pack(1)
 
@@ -161,8 +156,8 @@ typedef union{
 /****************************************/
 /*         function declaration         */
 /****************************************/
-extern _FD mpServerInitialize(int family, const int type, void *__restrict serverOption);
-extern int mpServerStart(const void const *opt, void *__restrict args, int (*serverFunc)(const void const *opt, void *__restrict argv));
+// extern _FD mpServerInitialize(int family, const int type, void *__restrict serverOption);
+// extern int mpServerStart(const void const *opt, void *__restrict args, int (*serverFunc)(const void const *opt, void *__restrict argv));
 extern void (*mpSignal(int actSignal, void (*func)(int)))(int);
 extern int mpDaemonize(void);
 extern int mpLockPossess(_DIR lockFile);

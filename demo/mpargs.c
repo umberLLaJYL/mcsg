@@ -19,30 +19,28 @@
 //         const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
 //         (type *)( (char *)__mptr - __offsetof(type,member) );})
 
-#define new(obj, opt...) obj##test(obj,##opt)
+// #define new(obj, opt...) obj##test(obj,##opt)
+
+typedef struct{
+    char *name;
+    void (*func)(int);
+}fff;
+
+void ffftest(int a)
+{
+    printf("%d\n", a);
+}
+
+#define ttt(exec, model) do{if(strncmp(model, #j, 3)) exec=model##test}while(0)
 
 struct logopt{
+    char *cp;
     int lo_mode;
     int lo_port;
     off_t lo_size;
     char lo_addr[16];
     char lo_path[104];
 };
-
-int svrtest(int a, int b)
-{
-    printf("svr %d\n", a);
-    printf("opt %d\n", b);
-}
-
-int sertest(int a, int b)
-{
-    printf("ser %d\n", a);
-    printf("opt %d\n", b);
-}
-
-int svr = 9;
-int ser = 8;
 
 int main(int argc, char *argv[])
 {
@@ -59,16 +57,8 @@ int main(int argc, char *argv[])
     // for(i = 0; i < argc; i++){
     //     printf("argv%i: %s\n", i, argv[i]);
     // }
-    teststr = malloc(sizeof(struct logopt));
-    // memset(teststr, 0, sizeof(teststr));
-    teststr->lo_port = 0;
-    if(&teststr->lo_port == NULL)
-        printf("ddddd\n");
 
-    if(argc == 2)
-        new(svr, argc);
-    else if(argc == 3)
-        new(ser, argc);
+    // ttt(fff);
 
     while((opt = getopt_long(argc, argv, "cd:e::", options, NULL)) != -1){
         switch(opt){

@@ -1,4 +1,4 @@
-#include "mpmod.h"
+#include "mplib.h"
 
 /**********************************************************************/
 /* function: initialize local network interface card(NIC).            */

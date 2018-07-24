@@ -1,5 +1,5 @@
-#ifndef _MPMOD_H
-#define _MPMOD_H
+#ifndef _MPLIB_H
+#define _MPLIB_H
 
 #include <sys/wait.h>
 #include <sys/un.h>
@@ -12,6 +12,13 @@
 #include <getopt.h>
 
 #include "mpio.h"
+
+#include "controls/osw.h"
+#include "controls/fsw.h"
+#include "controls/pd.h"
+
+#include "strategy/obp.h"
+#include "strategy/opfsw.h"
 #include "../murmurhash3/murmurhash3.h"
 
 /****************************************/
@@ -32,6 +39,9 @@
 #ifndef SIG_IGN
 #define	SIG_ERR ((void (*)(int))1)
 #endif
+
+#define new(obj, opt...) obj##Construct(malloc(sizeof(obj)), ##opt)
+#define delete(obj, ptr) do{obj##Destruct(ptr); free(ptr);}while(0)
 
 #define MP_SETTINGDIR "./settings.json"
 #define MP_TMPDIR "/tmp/mcsg/"
@@ -75,48 +85,6 @@ struct svropt_inet{
 
 #pragma pack(1)
 
-/* OSW structrue */
-typedef struct{
-	int lock;  /* link lock */
-	int line;  /* link line */
-}link_t;
-typedef struct{
-	int oreq;    /* switch(optical) requirement */
-	float opwr;  /* optical power */
-	float tpwr;  /* optical power threshold */
-}och_t;
-typedef struct{
-	int type;     /* OSW type */
-	int stat;     /* OSW status */
-	int hreq;     /* switch(heartbeat) requirement */
-	int rreq;     /* switch(Sec2Pri) requirement */
-	int sc;       /* switch count */
-	int scop;     /* switch count overload protection */
-	link_t link;
-	char och[0];  /* dynamic data buffer */
-}osw_t;
-
-/* FSW structrue */
-typedef struct{
-	int chx;    /* FSW channel sum */
-	int cch;    /* current channel */
-	int bch;    /* beginning of scan channel */
-	int ech;    /* end of scan channel */
-	int stime;  /* scan time */
-}fsw_t;
-
-/* OPM structrue */
-typedef struct{
-	int chx;       /* OPM channel sum */
-	char opwr[0];  /* optical power */
-}opm_t;
-
-/* OS, WDM structrue */
-typedef union{
-	int os;   /* OS status */
-	int wdm;  /* WDM status */
-}ow_t;
-
 typedef struct{
     int stat;
     int type;
@@ -134,7 +102,7 @@ typedef struct{
 	int addr;      /* command address */
 	int pstat;     /* power status */
 	int smax;      /* device slots */
-	char mn[9];    /* device machine number */
+	char mn[16];    /* device machine number */
 	inet_t nic[MP_MAXNIC];
 	// slot_t *slist;
 }mp_dev_t;
@@ -153,11 +121,43 @@ typedef union{
 
 #pragma pack()
 
+typedef struct{
+    int target;
+    int status;
+    char action[8];
+    char reply[128];
+}TaskNode;
+
+typedef struct iTask{
+    struct iTask *next;
+    pthread_mutex_t lock;
+    long id;
+    long timestamp;
+    int issue;
+    int status;
+    TaskNode command[24];
+}Task;
+
+typedef struct iContril{
+    void (*execute)(Task *task);
+    void *attribute;
+}Control;
+
+typedef struct MPServer{
+    void (*server)(Task *task);
+    void (*operater)(Control *subgroup);
+    void (*executor)(Control *subgroup, Task *task);
+    Control *subgroup;
+    Task *task;
+    char rule[4096];
+    char model[24];
+    char sn[16];    
+    char version[16];
+}MPsvr;
+
 /****************************************/
 /*         function declaration         */
 /****************************************/
-// extern _FD mpServerInitialize(int family, const int type, void *__restrict serverOption);
-// extern int mpServerStart(const void const *opt, void *__restrict args, int (*serverFunc)(const void const *opt, void *__restrict argv));
 extern void (*mpSignal(int actSignal, void (*func)(int)))(int);
 extern int mpDaemonize(void);
 extern int mpLockPossess(_DIR lockFile);

@@ -16,6 +16,22 @@
         "limits": "c",
         "type_traits": "c",
         "test.h": "c",
-        "bitset": "c"
+        "bitset": "c",
+        "__locale": "cpp",
+        "locale": "cpp",
+        "__mutex_base": "cpp",
+        "memory": "cpp",
+        "mutex": "cpp",
+        "iterator": "cpp",
+        "osw.h": "c",
+        "__functional_base": "c",
+        "__functional_base_03": "c",
+        "__tuple": "c",
+        "chrono": "c",
+        "functional": "c",
+        "ratio": "c",
+        "tuple": "c",
+        "utility": "c",
+        "mpsvr.h": "c"
     }
 }

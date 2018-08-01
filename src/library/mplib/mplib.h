@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <getopt.h>
+#include <pthread.h>
 
 #include "mpio.h"
 
@@ -18,7 +19,7 @@
 #include "controls/pd.h"
 
 #include "strategy/obp.h"
-#include "strategy/opfsw.h"
+#include "strategy/mpfsw.h"
 #include "../murmurhash3/murmurhash3.h"
 
 /****************************************/
@@ -76,13 +77,6 @@
 typedef in_addr_t _IP, _GW, _SM;
 typedef in_port_t _PORT;
 
-struct svropt_inet{
-	int (*soi_procfunc)(const char *__restrict, ...);
-	int soi_mode;
-	int soi_tcpport, soi_udpport;
-	_FD soi_tcpfd, soi_udpfd;
-};
-
 #pragma pack(1)
 
 typedef struct{
@@ -107,18 +101,6 @@ typedef struct{
 	// slot_t *slist;
 }mp_dev_t;
 
-/* LOG structrue */
-typedef union{
-	unsigned int mask;
-	/* log contents */
-	struct{
-		unsigned char severity;  /* action severity */
-		unsigned char type;      /* action type */
-		unsigned char obj;       /* action object */
-		unsigned char actn;      /* action */
-	};
-}log_t;
-
 #pragma pack()
 
 typedef struct{
@@ -139,26 +121,29 @@ typedef struct iTask{
 }Task;
 
 typedef struct iContril{
-    void (*execute)(Task *task);
+    struct iContril *next;
+    void (*execute)(char *command);
+    void (*operate)(struct iContril *control);
     void *attribute;
+    int type;
+    int label;
+    char identity[8];
 }Control;
 
-typedef struct MPServer{
-    void (*server)(struct MPServer *mpsvr);
-    void (*operater)(struct MPServer *mpsvr);
-    void (*executor)(struct MPServer *mpsvr);
+typedef struct oDevice{
+    void (*operater)(struct oDevice *device, Task *iTask);
+    void *(*getSubroupStatus)(Control *subgroup);
     Control *subgroup;
-    Task *task;
+    int address;
     char rule[4096];
     char model[24];
-    char sn[16];    
-    char version[16];
-}MPsvr;
+    char sn[16];
+}MPDevice;
 
 /****************************************/
 /*         function declaration         */
 /****************************************/
-extern void (*mpSignal(int actSignal, void (*func)(int)))(int);
+extern void (*mpSignal(int actSignal, void (*handler)(int)))(int);
 extern int mpDaemonize(void);
 extern int mpLockPossess(_DIR lockFile);
 

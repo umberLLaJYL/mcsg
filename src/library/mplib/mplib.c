@@ -118,7 +118,7 @@
 //     return errorCode;
 // }
 
-extern void (*mpSignal(int actSignal, void (*func)(int)))(int)
+extern void (*mpSignal(int actSignal, void (*handler)(int)))(int)
 {
     struct sigaction act, oact;
 

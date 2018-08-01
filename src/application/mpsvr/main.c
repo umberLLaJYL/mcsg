@@ -1,21 +1,21 @@
 #include "mpsvr.h"
 
+/**
+ * main frame of mpsvr.
+ */
 int main(int argc, char *argv[])
 {
-    MPsvr *mpsvr = new (MPsvr);
-    Control *subgroup = new (Control, MPSVR_CONF);
-    Task *task = new (Task);
+    MPServer *mpserver = new (MPServer);
+    MPDevice *device = new (MPDevice, MPSVR_CONF);
+    MPExecutor *executor = new (MPExecutor);
 
-    mpsvr->subgroup = subgroup;
-    mpsvr->task = task;
+    mpserver->server(mpserver, executor->task);
+    device->operater(device, executor->task);
+    executor->executor(executor, device->subgroup);
 
-    mpsvr->server(mpsvr);
-    mpsvr->operater(mpsvr);
-    mpsvr->executor(mpsvr);
-
-    delete(Control, subgroup);
-    delete(Task, task);
-    delete(Mpsvr, mpsvr);
+    delete(MPExecutor, executor);
+    delete(MPDevice, device);
+    delete(MPServer, mpserver);
 
     return 0;
 }

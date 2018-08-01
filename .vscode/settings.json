@@ -32,6 +32,9 @@
         "ratio": "c",
         "tuple": "c",
         "utility": "c",
-        "mpsvr.h": "c"
+        "mpsvr.h": "c",
+        "pthread.h": "c",
+        "fsw.h": "c",
+        "mpfsw.h": "c"
     }
 }

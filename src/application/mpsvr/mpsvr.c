@@ -1,6 +1,6 @@
 #include "mpsvr.h"
 
-static int integrated(void)
+static int integrated(struct MPServer *mpsvr)
 {
     _FD server, clientFD, client[16];
     fd_set readSet, grpSet;
@@ -88,22 +88,26 @@ static int integrated(void)
     }
 }
 
-extern MPsvr *MPsvrConstruct(MPsvr *__restrict impsvr)
+/**
+ * Construct object MPServer.
+ */
+extern MPServer *MPServerConstruct(MPServer *__restrict iMPServer)
 {
-    MPsvr *mpsvr = impsvr;
+    MPServer *mpServer = iMPServer;
 
-    if(mpsvr == NULL)
+    if(mpServer == NULL)
         return NULL;
 
-    mpsvr->server = integrated;
-    mpsvr->executor = executor;
+    memset(mpServer, 0, sizeof(MPServer));
+    mpServer->server = integrated;
+    strncpy(mpServer->version, mcsgVersion, 11);
 
-    return mpsvr;
+    return mpServer;
 }
 
-extern void MPsvrDestruct(MPsvr *__restrict impsvr)
+extern void MPServerDestruct(MPServer *__restrict iMPServer)
 {
-    if(impsvr == NULL)
+    if(iMPServer == NULL)
         return;
 
     return;

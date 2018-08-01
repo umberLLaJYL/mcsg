@@ -11,6 +11,7 @@
 typedef struct oServer{
     void (*server)(struct oServer *mpserver, Task *iTask);
     char version[16];
+    
 }MPServer;
 
 #endif

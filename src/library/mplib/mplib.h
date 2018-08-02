@@ -14,12 +14,9 @@
 
 #include "mpio.h"
 
-#include "controls/osw.h"
-#include "controls/fsw.h"
-#include "controls/pd.h"
+#include "controls/control.h"
+#include "operater/operater.h"
 
-#include "strategy/obp.h"
-#include "strategy/mpfsw.h"
 #include "../murmurhash3/murmurhash3.h"
 
 /****************************************/
@@ -69,7 +66,6 @@
 #define MP_BACKLOG 8 
 #define MP_MAXSLOT 32
 #define MP_MAXCLIENT 16
-#define MP_MAXNIC  4
 
 /****************************************/
 /*           class definetion           */
@@ -84,22 +80,6 @@ typedef struct{
     int type;
     char mn[9];
 }slot_t;
-
-typedef struct{
-    _PORT port;
-    _SM nm;
-    _IP ip;
-    _GW gw;
-}inet_t;
-
-typedef struct{
-	int addr;      /* command address */
-	int pstat;     /* power status */
-	int smax;      /* device slots */
-	char mn[16];    /* device machine number */
-	inet_t nic[MP_MAXNIC];
-	// slot_t *slist;
-}mp_dev_t;
 
 #pragma pack()
 
@@ -120,24 +100,18 @@ typedef struct iTask{
     TaskNode command[24];
 }Task;
 
-typedef struct iContril{
-    struct iContril *next;
-    void (*execute)(char *command);
-    void (*operate)(struct iContril *control);
-    void *attribute;
-    int type;
-    int label;
-    char identity[8];
-}Control;
+typedef struct Device{
 
-typedef struct oDevice{
-    void (*operater)(struct oDevice *device, Task *iTask);
-    void *(*getSubroupStatus)(Control *subgroup);
-    Control *subgroup;
+    void (*operate)(struct Device *device);
+    MPOperater *operater;
+
+    void *private;
     int address;
-    char rule[4096];
+	int powerStatus;
     char model[24];
-    char sn[16];
+	char MN[16];
+    char SN[16];
+    char rule[4096];
 }MPDevice;
 
 /****************************************/

@@ -35,6 +35,7 @@
         "mpsvr.h": "c",
         "pthread.h": "c",
         "fsw.h": "c",
-        "mpfsw.h": "c"
+        "mpfsw.h": "c",
+        "strategy.h": "c"
     }
 }

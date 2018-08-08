@@ -7,15 +7,21 @@ int main(int argc, char *argv[])
 {
     MPServer *mpserver = new (MPServer);
     MPDevice *device = new (MPDevice);
-    MPOperater *operater = new (MPOperater, MPSVR_CONF);
+    Operater *operater = new (Operater, MPSVR_CONF);
+    Task *task = new (Task);
 
-    device->operate(device);
-    mpserver->server(mpserver, executor->task);
-    operater->operate(operater, executor->task);
+    device->operater = operater;
+    operater->task = mpserver->task = task;
 
-    delete(MPExecutor, executor);
-    delete(MPOperater, operater);
+    device->construct(device, MPSVR_CONF);
+
+    mpserver->initialize(mpserver);
+    mpserver->start(mpserver);
+
+    delete(MPDevice, device);
     delete(MPServer, mpserver);
+    delete(Operater, operater);
+    delete(Task, task);
 
     return 0;
 }

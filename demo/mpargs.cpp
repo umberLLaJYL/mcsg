@@ -11,6 +11,10 @@
 // #include <pthread.h>
 #include <getopt.h>
 
+#include <iostream>
+using namespace std;
+#include <string.h>
+
 // #define container_of(ptr, type, member)({ \
 //             const typeof(((type *)0)->member) *__mptr = (ptr); \
 //             (type *)((char *)__mptr - offsetof(type, member)); \
@@ -19,43 +23,24 @@
 //         const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
 //         (type *)( (char *)__mptr - __offsetof(type,member) );})
 
-// #define new(obj, opt...) obj##test(obj,##opt)
-
-struct logopt{
-    char *cp;
-    int lo_mode;
-    int lo_port;
-    off_t lo_size;
-    char lo_addr[16];
-    char lo_path[104];
-};
-
 int main(int argc, char *argv[])
 {
-    int i = 9, opt;
-    char *port, *token;
+
     // struct logopt logoption, *teststr;
     // static struct option options[] = {
     //     {"default", 2, NULL, 'a'},
     //     {"tcponly", 2, NULL, 'b'}
     // };
 
-    char str[] = "osw(0'-'$1R1, 1'+'$1R2, 2'*'$1R3)";
+    int i;
+    string s = "Hello World!";
 
-    if(strncmp(strtok(str, "("), "osw", 3) == 0){
-        token = strtok(NULL, ")");
-        token = strtok(token, ",");
-        while(token != NULL){
-            printf("%s, %d\n", token, atoi(token));
-            token = strtok(NULL, ",");
-        }
-    }
+    cout << s << endl;
 
     // printf("argc: %d\n", argc);
 
-    // for(i = 0; i < argc; i++){
-    //     printf("argv%i: %s\n", i, argv[i]);
-    // }
+    for(i = 0; i < argc; i++)
+        printf("argv%i: %s\n", i, argv[i]);
 
     // while((opt = getopt_long(argc, argv, "cd:e::", options, NULL)) != -1){
     //     switch(opt){

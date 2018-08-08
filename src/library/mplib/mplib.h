@@ -1,6 +1,9 @@
 #ifndef _MPLIB_H
 #define _MPLIB_H
 
+/**
+ * unix(POSIX)/C library
+ */
 #include <sys/wait.h>
 #include <sys/un.h>
 #include <time.h>
@@ -12,6 +15,15 @@
 #include <getopt.h>
 #include <pthread.h>
 
+/**
+ * C++ library
+ */
+#include <iostream.h>
+#include <string.h>
+
+/**
+ * custom library
+ */
 #include "mpio.h"
 
 #include "controls/control.h"
@@ -67,9 +79,6 @@
 #define MP_MAXSLOT 32
 #define MP_MAXCLIENT 16
 
-/****************************************/
-/*           class definetion           */
-/****************************************/
 typedef in_addr_t _IP, _GW, _SM;
 typedef in_port_t _PORT;
 
@@ -90,28 +99,60 @@ typedef struct{
     char reply[128];
 }TaskNode;
 
-typedef struct iTask{
-    struct iTask *next;
+typedef struct Task{
+
+    struct Task *next;
+
     pthread_mutex_t lock;
     long id;
     long timestamp;
-    int issue;
+    int issuer;
     int status;
     TaskNode command[24];
 }Task;
 
+typedef struct Peripheral{
+    /** 
+     * LCD
+     * BUZ
+     * LED
+     * KEY
+     */
+
+    /**
+     * void *function;
+     * void *parameter;
+     * void *data;
+     * void *status;
+     */
+}peripheral;
+
 typedef struct Device{
 
-    void (*operate)(struct Device *device);
-    MPOperater *operater;
+    void (*construct)(struct Device *device, const char *file);
+    Operater *operater;
+
+    void *subgroup;
 
     void *private;
+
     int address;
-	int powerStatus;
-    char model[24];
-	char MN[16];
-    char SN[16];
-    char rule[4096];
+
+    void cons(int a, int b){
+        a = b;
+    };
+    
+    struct stat{
+        int power;
+        int signal;
+    }status;
+    
+    struct ID{
+        char model[24];
+        char MN[16];
+        char SN[16];
+    }identity;
+
 }MPDevice;
 
 /****************************************/

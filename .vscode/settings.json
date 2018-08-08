@@ -36,6 +36,10 @@
         "pthread.h": "c",
         "fsw.h": "c",
         "mpfsw.h": "c",
-        "strategy.h": "c"
+        "strategy.h": "c",
+        "ios": "c",
+        "iostream.h": "c",
+        "string.h": "c",
+        "iostream": "c"
     }
 }

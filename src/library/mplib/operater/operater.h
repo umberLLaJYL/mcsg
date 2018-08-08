@@ -4,12 +4,15 @@
 #include "mpfsw.h"
 #include "mpobp.h"
 
-typedef struct Operater{
+typedef struct Op{
+
     void (*operate)(void *subgroup);
     void (*execute)(void *subgroup, Task *task);
-    void *(*getSubroupStatus)(void *subgroup);
-    void *subgroup;
-    Task *task
-}MPOperater;
+    void *(*getSubroupStatus)(void *subgroup, ...);
+    
+    Task *task;
+    char rule[4096];
+
+}Operater;
 
 #endif

@@ -6,10 +6,15 @@
 #include "pd.h"
 
 typedef struct Contril{
+
     struct Contril *next;
+
     void (*execute)(char *command);
     void (*operate)(struct iContril *control);
+
     void *attribute;
+    void *data;
+    
     int type; 
     int label;
     char identity[8];

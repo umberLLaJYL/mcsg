@@ -40,6 +40,8 @@
         "ios": "c",
         "iostream.h": "c",
         "string.h": "c",
-        "iostream": "c"
+        "iostream": "c",
+        "string": "cpp",
+        "iosfwd": "cpp"
     }
 }

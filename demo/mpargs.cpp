@@ -11,9 +11,11 @@
 // #include <pthread.h>
 #include <getopt.h>
 
+#include <vector>
+#include <cstddef>
 #include <iostream>
 using namespace std;
-#include <string.h>
+#include <string>
 
 // #define container_of(ptr, type, member)({ \
 //             const typeof(((type *)0)->member) *__mptr = (ptr); \
@@ -23,24 +25,114 @@ using namespace std;
 //         const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
 //         (type *)( (char *)__mptr - __offsetof(type,member) );})
 
-int main(int argc, char *argv[])
+
+
+
+
+class Control {
+private:
+
+public:
+    Control(/* args */);
+    virtual ~Control();
+
+    virtual int execute() = 0;
+};
+
+Control::Control(/* args */)
 {
 
+}
+
+Control::~Control()
+{
+
+}
+
+
+
+class Pd : public Control {
+private:
+    
+public:
+    Pd(/* args */);
+    ~Pd();
+
+    int execute() override;
+};
+
+Pd::Pd(/* args */)
+{
+    cout << "Pd has been created: "  << endl;
+}
+
+Pd::~Pd()
+{
+    cout << "Pd has been deleted: "  << endl;
+}
+
+int Pd::execute()
+{
+    return 0;
+}
+
+
+
+
+class Device {
+private:
+    Pd *pd = new Pd;
+public:
+    Device(const string &s);
+    virtual ~Device();
+};
+
+Device::Device(const string &conf)
+{
+    cout << "device has been created: " << conf << endl;
+}
+
+Device::~Device()
+{
+    delete pd;
+    cout << "device has been deleted" << endl;
+}
+
+
+
+
+
+int main(int argc, char *argv[])
+{
     // struct logopt logoption, *teststr;
     // static struct option options[] = {
     //     {"default", 2, NULL, 'a'},
     //     {"tcponly", 2, NULL, 'b'}
     // };
 
-    int i;
-    string s = "Hello World!";
+    Device *dev = new Device("mpdev");
+    delete(dev);
 
-    cout << s << endl;
+    string s, s1 = "zsljds";
+    decltype(s) s2 = "decltype";
+
+    cout << s2 << endl;
+
+    for(char c : s1)
+        cout << c << endl;
+
+    while(getline(cin, s)){
+        if(s == "quit")
+            return 0;
+        if(!s.empty())
+            cout << "cin rcv: " << s + ", len: " << s.size() << endl;
+    }
+
 
     // printf("argc: %d\n", argc);
 
-    for(i = 0; i < argc; i++)
-        printf("argv%i: %s\n", i, argv[i]);
+    // for(i = 0; i < argc; i++)
+    //     printf("argv%i: %s\n", i, argv[i]);
 
     // while((opt = getopt_long(argc, argv, "cd:e::", options, NULL)) != -1){
     //     switch(opt){

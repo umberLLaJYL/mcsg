@@ -5,12 +5,8 @@
  * unix(POSIX)/C library
  */
 #include <sys/wait.h>
-#include <sys/un.h>
 #include <time.h>
 #include <sys/resource.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <signal.h>
 #include <getopt.h>
 #include <pthread.h>
@@ -18,16 +14,19 @@
 /**
  * C++ library
  */
-#include <iostream.h>
-#include <string.h>
+#include <string>
+#include <vector>
+#include <cstddef>
+#include <thread>
+#include <map>
 
 /**
  * custom library
  */
 #include "mpio.h"
+#include "mpsocket.h"
 
-#include "controls/control.h"
-#include "operater/operater.h"
+#include "Device/Device.h"
 
 #include "../murmurhash3/murmurhash3.h"
 
@@ -49,9 +48,6 @@
 #ifndef SIG_IGN
 #define	SIG_ERR ((void (*)(int))1)
 #endif
-
-#define new(obj, opt...) obj##Construct(malloc(sizeof(obj)), ##opt)
-#define delete(obj, ptr) do{obj##Destruct(ptr); free(ptr);}while(0)
 
 #define MP_SETTINGDIR "./settings.json"
 #define MP_TMPDIR "/tmp/mcsg/"
@@ -82,78 +78,7 @@
 typedef in_addr_t _IP, _GW, _SM;
 typedef in_port_t _PORT;
 
-#pragma pack(1)
-
-typedef struct{
-    int stat;
-    int type;
-    char mn[9];
-}slot_t;
-
-#pragma pack()
-
-typedef struct{
-    int target;
-    int status;
-    char action[8];
-    char reply[128];
-}TaskNode;
-
-typedef struct Task{
-
-    struct Task *next;
-
-    pthread_mutex_t lock;
-    long id;
-    long timestamp;
-    int issuer;
-    int status;
-    TaskNode command[24];
-}Task;
-
-typedef struct Peripheral{
-    /** 
-     * LCD
-     * BUZ
-     * LED
-     * KEY
-     */
-
-    /**
-     * void *function;
-     * void *parameter;
-     * void *data;
-     * void *status;
-     */
-}peripheral;
-
-typedef struct Device{
-
-    void (*construct)(struct Device *device, const char *file);
-    Operater *operater;
-
-    void *subgroup;
-
-    void *private;
-
-    int address;
-
-    void cons(int a, int b){
-        a = b;
-    };
-    
-    struct stat{
-        int power;
-        int signal;
-    }status;
-    
-    struct ID{
-        char model[24];
-        char MN[16];
-        char SN[16];
-    }identity;
-
-}MPDevice;
+class GPIO;
 
 /****************************************/
 /*         function declaration         */

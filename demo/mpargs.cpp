@@ -11,93 +11,99 @@
 // #include <pthread.h>
 #include <getopt.h>
 
+#include <sys/un.h>
+#include <sys/socket.h>
+#include <sys/select.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include <vector>
 #include <cstddef>
-#include <iostream>
-using namespace std;
+#include <cstdio>
+// using namespace std;
 #include <string>
+#include <iostream>
+#include <fstream>
 
-// #define container_of(ptr, type, member)({ \
-//             const typeof(((type *)0)->member) *__mptr = (ptr); \
-//             (type *)((char *)__mptr - offsetof(type, member)); \
-//         })
-// #define container_of(ptr, type, member) ({                      \
-//         const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
-//         (type *)( (char *)__mptr - __offsetof(type,member) );})
+#include "../src/library/json/rapidjson/rapidjson.h"
+#include "../src/library/json/rapidjson/document.h"
+#include "../src/library/json/rapidjson/pointer.h"
+#include "../src/library/json/rapidjson/stringbuffer.h"
+#include "../src/library/json/rapidjson/writer.h"
+#include "../src/library/json/rapidjson/prettywriter.h"
+#include "../src/library/json/rapidjson/filereadstream.h"
+#include "../src/library/json/rapidjson/filewritestream.h"
+
+using namespace rapidjson;
 
 
 
+class test : public std::fstream{
 
+    const std::string prefix;
 
-class Control {
 private:
+    std::string identity;
 
 public:
-    Control(/* args */);
-    virtual ~Control();
+    test(const std::string &);
+    ~test();
 
-    virtual int execute() = 0;
+    const std::string &getIdentity() const {
+        return this->identity;
+    }
 };
 
-Control::Control(/* args */)
+test::test(const std::string &name) : prefix("test")
 {
+    char buf[4096];
+    identity = name;
 
+    this->open(prefix+identity);
+    this->read(buf, 4096);
+    std::cout << buf << std::endl;
 }
 
-Control::~Control()
+test::~test()
 {
-
 }
 
 
 
-class Pd : public Control {
+class a
+{
 private:
-    
+    /* data */
+    int head;
 public:
-    Pd(/* args */);
-    ~Pd();
+    a(int b) : head(b) {
+        std::cout << "aaaa" << std::endl;
+    }
+    ~a();
 
-    int execute() override;
+    bool operator == (int ret) const {
+        if (this->head == ret)
+            return true;
+        return false;
+    }
+
+    bool operator == (const a *ret) const {
+        if (this != ret)
+            return NULL;
+    }
 };
 
-Pd::Pd(/* args */)
+a::~a()
 {
-    cout << "Pd has been created: "  << endl;
 }
 
-Pd::~Pd()
-{
-    cout << "Pd has been deleted: "  << endl;
-}
-
-int Pd::execute()
-{
-    return 0;
-}
-
-
-
-
-class Device {
-private:
-    Pd *pd = new Pd;
+class b : public a {
 public:
-    Device(const string &s);
-    virtual ~Device();
+    b() : a::a(8) {
+        std::cout << "aaaa" << std::endl;
+    }
+    ~b();
 };
-
-Device::Device(const string &conf)
-{
-    cout << "device has been created: " << conf << endl;
-}
-
-Device::~Device()
-{
-    delete pd;
-    cout << "device has been deleted" << endl;
-}
-
 
 
 
@@ -109,24 +115,56 @@ int main(int argc, char *argv[])
     //     {"default", 2, NULL, 'a'},
     //     {"tcponly", 2, NULL, 'b'}
     // };
+    char buf[4096];
+    StringBuffer sbuf;
 
-    Device *dev = new Device("mpdev");
-    delete(dev);
+    char str[4096];
+    std::string strbuf;
 
-    string s, s1 = "zsljds";
-    decltype(s) s2 = "decltype";
+    FILE *fp;
 
-    cout << s2 << endl;
+    
+    Document doc;
+    Document::AllocatorType &allocator = doc.GetAllocator();
+    doc.SetObject();
 
-    for(char c : s1)
-        cout << c << endl;
+    doc.AddMember("a1", "b1", allocator);
+    doc.AddMember("a2", "b2", allocator);
+    doc.AddMember("a3", "b3", allocator);
 
-    while(getline(cin, s)){
-        if(s == "quit")
-            return 0;
-        if(!s.empty())
-            cout << "cin rcv: " << s + ", len: " << s.size() << endl;
-    }
+
+
+    PrettyWriter<StringBuffer> pretty_writer(sbuf);
+    pretty_writer.SetMaxDecimalPlaces(4);
+    doc.Accept(pretty_writer);
+
+    std::cout << sbuf.GetString() << std::endl;
+
+    std::ofstream fout("b.json");
+    fout << sbuf.GetString();
+    fout.close();
+
+    // sprintf(str, "abcdefghijklmnopqrstuvwxyz\n");
+
+    a aaa(9);
+
+    if(aaa == 9)
+        std::cout << "null" << std::endl;
+
+
+    // vector<string> sss{"aaa", "bbb", "ccc"};
+
+    // cout << sss.size() << endl;
+
+    // for(char c : s1)
+    //     cout << c << endl;
+
+    // while(getline(cin, s)){
+    //     if(s == "quit")
+    //         return 0;
+    //     if(!s.empty())
+    //         cout << "cin rcv: " << s + ", len: " << s.size() << endl;
+    // }
 
 
     // printf("argc: %d\n", argc);

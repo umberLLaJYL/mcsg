@@ -1,6 +1,9 @@
 #ifndef _MPIO_H
 #define _MPIO_H
 
+/**
+ * unix(POSIX)/C library
+ */
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +14,12 @@
 #include <errno.h>
 #include <stdint.h>
 #include <fcntl.h>
+
+/**
+ * C++ library
+ */
+#include <iostream>
+#include <fstream>
 
 /****************************************/
 /*                macro                 */

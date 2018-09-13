@@ -1,9 +1,10 @@
 #ifndef _MPSOCKET_H
 #define _MPSOCKET_H
 
+#include <unistd.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <sys/un.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -14,12 +15,9 @@
 #include <cstddef>
 #include <fstream>
 
-/**
- * Abstract base class template: MPSocket.
- */
-template <class Address>
-struct MPSocket {
+// #include <regex>
 
+struct _MPSocket {
     typedef int Sock;
     typedef std::size_t StdSize;
     typedef std::string StdString;
@@ -32,21 +30,18 @@ private:
     StdString outBuffer;
 
 protected:
-    Address address;
     Sock sockfd;
 
 public:
-    MPSocket();
-    ~MPSocket();
+    _MPSocket();
+    ~_MPSocket();
 
-    // struct MPSocket &operator << (const char *);
-    // struct MPSocket &operator >> (char *);
+    explicit operator bool() const;
+    _MPSocket &operator = (Sock sock);
 
-    virtual bool reopen() = 0;
-
-    StdSize Read(char *buffer, StdSize size);
-    StdSize Write(const char *buffer, MPSocket<Address>::StdSize size);
-    int Close();
+    StdSize Read(char *, StdSize);
+    StdSize Write(const char *, StdSize);
+    bool Close();
 
     bool shutdownRDWR();
     bool shutdownRead();
@@ -61,136 +56,96 @@ public:
     bool isInvalid() const;
 
     template <typename Option>
-    int setSocket(int, Option);
+    bool setSocket(int, Option);
+    bool setNonblock();
+    bool setBlock();
 
     template <typename Option>
-    int getSocketOption(int, Option);
-
-    template <typename Addr>
-    int getPeerName(Sock, Addr);
-
+    bool getSocketOption(int, Option) const;
     Sock getDescriptor() const;
 };
 
+/**
+ * base class template: MPSocket.
+ */
 template <class Address>
-MPSocket<Address>::MPSocket(/* args */)
-{
-}
+struct _MPServerSocket : public _MPSocket {
 
-template <class Address>
-MPSocket<Address>::~MPSocket()
-{
-}
+private:
+    int backlog;
 
-// template <class Address>
-// MPSocket<class Address>::StdSize MPSocket<Address>::operator << (const char *buffer)
-// {
-//     return fread(buffer, size, 1, this->inStream);
-// }
+protected:
+    Address address;
 
-// template <class Address>
-// MPSocket<Address>::StdSize MPSocket<Address>::operator >> (char *buffer)
-// {
-//     return fwrite(buffer, size, 1, this->outStream);
-// }
+    template <typename ADDR>
+    bool _bind(ADDR serverAddress) {
+        return bind(sockfd, (struct sockaddr *)&serverAddress, sizeof(serverAddress));
+    }
 
-template <class Address>
-typename MPSocket<Address>::StdSize MPSocket<Address>::Read(char *buffer, MPSocket<Address>::StdSize size)
-{
-    return fread(buffer, size, 1, this->inStream);
-}
+    template <typename ADDR>
+    void setAddress(ADDR serverAddress) {
+        address = serverAddress;
+    }
+    
+public:
+    _MPServerSocket() : backlog(10) {}
+    ~_MPServerSocket() {}
 
-template <class Address>
-typename MPSocket<Address>::StdSize MPSocket<Address>::Write(const char *buffer, MPSocket<Address>::StdSize size)
-{
-    return fwrite(buffer, size, 1, this->outStream);
-}
+    bool Listen(){
+        return listen(sockfd, backlog);
+    }
+    
+    Sock Accept() {
+        return accept(sockfd, (struct sockaddr *)NULL, NULL);
+    }
+    Sock Accept(Address addr, socklen_t length) {
+        length = sizeof(addr);
 
-template <class Address>
-int MPSocket<Address>::Close()
-{
-    return close(this->sockfd);
-}
+        return accept(sockfd, (struct sockaddr *)&addr, &length);
+    }
 
-template <class Address>
-bool MPSocket<Address>::shutdownRDWR()
-{
-    return shutdown(this->sockfd, SHUT_RDWR);
-}
+    void setBacklog(int bl) {
+        backlog = bl;
+    }
 
-template <class Address>
-bool MPSocket<Address>::shutdownRead()
-{
-    return shutdown(this->sockfd, SHUT_RD);
-}
+    int getBacklog() const {
+        return backlog;
+    }
+};
 
 template <class Address>
-bool MPSocket<Address>::shutdownWrite()
-{
-    return shutdown(this->sockfd, SHUT_WR);
-}
+struct _MPServiceSocket : public _MPSocket {
+
+private:
+    Address peer;
+
+public:
+    _MPServiceSocket() {}
+    ~_MPServiceSocket() {}
+
+    bool getPeerName() {
+        return getpeername(sockfd, (struct sockaddr *)&peer, sizeof(peer));
+    }
+};
 
 template <class Address>
-bool MPSocket<Address>::openInStream()
-{
-    if((this->inStream = fdopen(this->sockfd, "r")) == NULL)
-        return false;
-    return true;
-}
+struct _MPClientSocket : public _MPSocket {
 
-template <class Address>
-bool MPSocket<Address>::openOutStream()
-{
-    if((this->outStream = fdopen(this->sockfd, "w")) == NULL)
-        return false;
-    return true;
-}
+private:
+    Address local;
 
-template <class Address>
-bool MPSocket<Address>::closeInStream()
-{
-    return fclose(this->inStream);
-}
+protected:
+    Address destination;
 
-template <class Address>
-bool MPSocket<Address>::closeOutStream()
-{
-    return fclose(this->outStream);
-}
+public:
+    _MPClientSocket();
+    ~_MPClientSocket();
 
-template <class Address>
-bool MPSocket<Address>::isInvalid() const
-{
-    if(this->sockfd < 0)
-        return false;
-    return true;
-}
+    bool Connect() {
+        connect(sockfd, (struct sockaddr *)destination, sizeof(destination));
+    }
+};
 
-template <class Address>
-template <typename Option>
-int MPSocket<Address>::setSocket(int key, Option option)
-{
-    return setsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
-}
-
-template <class Address>
-template <typename Option>
-int MPSocket<Address>::getSocketOption(int key, Option option)
-{
-    return getsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
-}
-
-template <class Address>
-template <typename Addr>
-int MPSocket<Address>::getPeerName(Sock peer, Addr addr)
-{
-    return getpeername(peer, &addr, sizeof(addr));
-}
-
-template <class Address>
-typename MPSocket<Address>::Sock MPSocket<Address>::getDescriptor() const
-{
-    return this->sockfd;
-}
+#include "mpsocket.cpp"
 
 #endif

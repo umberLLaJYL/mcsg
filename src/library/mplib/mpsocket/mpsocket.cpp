@@ -1,125 +1,137 @@
-// #include "mpsocket.h"
+#ifndef _MPSOCKET_CPP
+#define _MPSOCKET_CPP
 
-/**
- * interfaces of MPSocket.
- */
-// template <class Address>
-// MPSocket<Address>::MPSocket(/* args */)
-// {
-// }
+#include "mpsocket.h"
 
-// template <class Address>
-// MPSocket<Address>::~MPSocket()
-// {
-// }
+_MPSocket::_MPSocket() : sockfd(-1), inStream(NULL), outStream(NULL)
+{
+}
 
-// // template <class Address>
-// // MPSocket<class Address>::StdSize MPSocket<Address>::operator << (const char *buffer)
-// // {
-// //     return fread(buffer, size, 1, this->inStream);
-// // }
+_MPSocket::~_MPSocket()
+{
+    this->Close();
+}
 
-// // template <class Address>
-// // MPSocket<Address>::StdSize MPSocket<Address>::operator >> (char *buffer)
-// // {
-// //     return fwrite(buffer, size, 1, this->outStream);
-// // }
 
-// template <class Address>
-// typename MPSocket<Address>::StdSize MPSocket<Address>::Read(char *buffer, MPSocket<Address>::StdSize size)
-// {
-//     return fread(buffer, size, 1, this->inStream);
-// }
+_MPSocket::operator bool() const
+{
+    if(this->sockfd < 0)
+        return false;
+    else
+        return true;
+}
 
-// template <class Address>
-// typename MPSocket<Address>::StdSize MPSocket<Address>::Write(const char *buffer, MPSocket<Address>::StdSize size)
-// {
-//     return fwrite(buffer, size, 1, this->outStream);
-// }
+_MPSocket &_MPSocket::operator = (Sock sock)
+ {
+    this->Close();
+    this->sockfd = sock;
+    return *this;
+}
 
-// template <class Address>
-// int MPSocket<Address>::Close()
-// {
-//     return close(this->sockfd);
-// }
+_MPSocket::StdSize _MPSocket::Read(char *buffer, StdSize size)
+{
+    return fread(buffer, size, 1, this->inStream);
+}
 
-// template <class Address>
-// bool MPSocket<Address>::shutdownRDWR()
-// {
-//     return shutdown(this->sockfd, SHUT_RDWR);
-// }
+_MPSocket::StdSize _MPSocket::Write(const char *buffer, StdSize size)
+{
+    return fwrite(buffer, size, 1, this->outStream);
+}
 
-// template <class Address>
-// bool MPSocket<Address>::shutdownRead()
-// {
-//     return shutdown(this->sockfd, SHUT_RD);
-// }
+bool _MPSocket::Close()
+{
+    closeInStream();
+    closeOutStream();
+    return close(this->sockfd);
+}
 
-// template <class Address>
-// bool MPSocket<Address>::shutdownWrite()
-// {
-//     return shutdown(this->sockfd, SHUT_WR);
-// }
+bool _MPSocket::shutdownRDWR()
+{
+    return shutdown(this->sockfd, SHUT_RDWR);
+}
 
-// template <class Address>
-// bool MPSocket<Address>::openInStream()
-// {
-//     if((this->inStream = fdopen(this->sockfd, "r")) == NULL)
-//         return false;
-//     return true;
-// }
+bool _MPSocket::shutdownRead()
+{
+    return shutdown(this->sockfd, SHUT_RD);
+}
 
-// template <class Address>
-// bool MPSocket<Address>::openOutStream()
-// {
-//     if((this->outStream = fdopen(this->sockfd, "w")) == NULL)
-//         return false;
-//     return true;
-// }
+bool _MPSocket::shutdownWrite()
+{
+    return shutdown(this->sockfd, SHUT_WR);
+}
 
-// template <class Address>
-// bool MPSocket<Address>::closeInStream()
-// {
-//     return fclose(this->inStream);
-// }
+bool _MPSocket::openInStream()
+{
+    if((this->inStream = fdopen(this->sockfd, "r")) == NULL)
+        return false;
+    return true;
+}
 
-// template <class Address>
-// bool MPSocket<Address>::closeOutStream()
-// {
-//     return fclose(this->outStream);
-// }
+bool _MPSocket::openOutStream()
+{
+    if((this->outStream = fdopen(this->sockfd, "w")) == NULL)
+        return false;
+    return true;
+}
 
-// template <class Address>
-// bool MPSocket<Address>::isInvalid() const
-// {
-//     if(this->sockfd < 0)
-//         return false;
-//     return true;
-// }
+bool _MPSocket::closeInStream()
+{
+    if(this->inStream)
+        return fclose(this->inStream);
+    return true;
+}
 
-// template <class Address>
-// template <typename Option>
-// int MPSocket<Address>::setSocket(int key, Option option)
-// {
-//     return setsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
-// }
+bool _MPSocket::closeOutStream()
+{
+    if(this->outStream)
+        return fclose(this->outStream);
+    return true;
+}
 
-// template <class Address>
-// template <typename Option>
-// int MPSocket<Address>::getSocketOption(int key, Option option)
-// {
-//     return getsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
-// }
+bool _MPSocket::isInvalid() const
+{
+    if(this->sockfd < 0)
+        return true;
+    return false;
+}
 
-// template <class Address>
-// template <typename Addr>
-// int MPSocket<Address>::getPeerName(Sock peer, Addr addr)
-// {
-//     return getpeername(peer, &addr, sizeof(addr));
-// }
+template <typename Option>
+bool _MPSocket::setSocket(int key, Option option)
+{
+    return setsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
+}
 
-// template <class Address>
-// typename MPSocket<Address>::Sock MPSocket<Address>::getDescriptor() const
-// {
-//     return this->sockfd;
-// }
+bool _MPSocket::setNonblock()
+{
+    int fdFlag;
+
+    if((fdFlag = fcntl(this->sockfd, F_GETFL, 0)) < 0)
+        return false;
+    if(fcntl(this->sockfd, F_SETFL, fdFlag|O_NONBLOCK) < 0)
+        return false;
+    return true;
+}
+
+bool _MPSocket::setBlock()
+{
+    int fdFlag;
+
+    if((fdFlag = fcntl(this->sockfd, F_GETFL, 0)) < 0)
+        return false;
+    if(fcntl(this->sockfd, F_SETFL, fdFlag&(~O_NONBLOCK)) < 0)
+        return false;
+    return true;
+}
+
+template <typename Option>
+bool _MPSocket::getSocketOption(int key, Option option) const
+{
+    return getsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
+}
+
+_MPSocket::Sock _MPSocket::getDescriptor() const
+{
+    return this->sockfd;
+}
+
+#endif

@@ -1,25 +1,5 @@
 #include "mplib.h"
 
-class GPIO : public std::fstream{
-
-    const std::string prefix;
-
-private:
-    // string identification;
-
-public:
-    GPIO(/* args */);
-    ~GPIO();
-};
-
-GPIO::GPIO(/* args */)
-{
-}
-
-GPIO::~GPIO()
-{
-}
-
 /**********************************************************************/
 /* function: initialize local network interface card(NIC).            */
 /* input: NIC: NIC that nedd to be initialized.                       */

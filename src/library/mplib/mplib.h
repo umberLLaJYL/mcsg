@@ -78,8 +78,31 @@
 typedef in_addr_t _IP, _GW, _SM;
 typedef in_port_t _PORT;
 
-class GPIO;
+class GPIO {
 
+    const std::string prefix;
+
+private:
+    int identifier;
+    _FD gpiofd;
+    // string identification;
+
+public:
+    GPIO(int);
+    ~GPIO();
+};
+
+GPIO::GPIO(int identifier)
+{
+    _FD fexport;
+
+    if((fexport = open("")) < 0)
+        gpiofd = -1;
+}
+
+GPIO::~GPIO()
+{
+}
 /****************************************/
 /*         function declaration         */
 /****************************************/

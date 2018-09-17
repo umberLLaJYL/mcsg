@@ -40,24 +40,22 @@ _MPSocket::StdSize _MPSocket::Write(const char *buffer, StdSize size)
 
 bool _MPSocket::Close()
 {
-    closeInStream();
-    closeOutStream();
-    return close(this->sockfd);
+    return !close(this->sockfd);
 }
 
 bool _MPSocket::shutdownRDWR()
 {
-    return shutdown(this->sockfd, SHUT_RDWR);
+    return !shutdown(this->sockfd, SHUT_RDWR);
 }
 
 bool _MPSocket::shutdownRead()
 {
-    return shutdown(this->sockfd, SHUT_RD);
+    return !shutdown(this->sockfd, SHUT_RD);
 }
 
 bool _MPSocket::shutdownWrite()
 {
-    return shutdown(this->sockfd, SHUT_WR);
+    return !shutdown(this->sockfd, SHUT_WR);
 }
 
 bool _MPSocket::openInStream()
@@ -77,14 +75,14 @@ bool _MPSocket::openOutStream()
 bool _MPSocket::closeInStream()
 {
     if(this->inStream)
-        return fclose(this->inStream);
+        return !fclose(this->inStream);
     return true;
 }
 
 bool _MPSocket::closeOutStream()
 {
     if(this->outStream)
-        return fclose(this->outStream);
+        return !fclose(this->outStream);
     return true;
 }
 
@@ -98,7 +96,7 @@ bool _MPSocket::isInvalid() const
 template <typename Option>
 bool _MPSocket::setSocket(int key, Option option)
 {
-    return setsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
+    return !setsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
 }
 
 bool _MPSocket::setNonblock()
@@ -126,7 +124,7 @@ bool _MPSocket::setBlock()
 template <typename Option>
 bool _MPSocket::getSocketOption(int key, Option option) const
 {
-    return getsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
+    return !getsockopt(this->sockfd, SOL_SOCKET, key, &option, sizeof(option));
 }
 
 _MPSocket::Sock _MPSocket::getDescriptor() const

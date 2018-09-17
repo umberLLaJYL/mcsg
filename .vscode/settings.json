@@ -71,6 +71,9 @@
         "queue": "cpp",
         "stack": "cpp",
         "mpsocket.h": "c",
-        "__string": "cpp"
+        "__string": "cpp",
+        "atomic": "cpp",
+        "__memory": "cpp",
+        "system_error": "cpp"
     }
 }

@@ -1,34 +1,33 @@
 #ifndef _MPLIB_H
 #define _MPLIB_H
 
-/**
- * unix(POSIX)/C library
- */
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
+#include <errno.h>
+#include <stdint.h>
+#include <fcntl.h>
 #include <time.h>
 #include <sys/resource.h>
 #include <signal.h>
 #include <getopt.h>
+
 #include <pthread.h>
 
-/**
- * C++ library
- */
+#include <iostream>
 #include <string>
 #include <vector>
 #include <cstddef>
 #include <thread>
 #include <map>
 
-/**
- * custom library
- */
-#include "mpio.h"
-#include "mpsocket.h"
+#include "mpsocket/mpsocket.h"
 
-#include "Device/Device.h"
-
-#include "../murmurhash3/murmurhash3.h"
+// #include "../murmurhash3/murmurhash3.h"
 
 /****************************************/
 /*                macro                 */
@@ -75,39 +74,69 @@
 #define MP_MAXSLOT 32
 #define MP_MAXCLIENT 16
 
+#define _DIR const char * const
+
+typedef int _FD;
 typedef in_addr_t _IP, _GW, _SM;
 typedef in_port_t _PORT;
 
-class GPIO {
-
-    const std::string prefix;
-
-private:
-    int identifier;
-    _FD gpiofd;
-    // string identification;
-
-public:
-    GPIO(int);
-    ~GPIO();
-};
-
-GPIO::GPIO(int identifier)
-{
-    _FD fexport;
-
-    if((fexport = open("")) < 0)
-        gpiofd = -1;
-}
-
-GPIO::~GPIO()
-{
-}
 /****************************************/
 /*         function declaration         */
 /****************************************/
 extern void (*mpSignal(int actSignal, void (*handler)(int)))(int);
 extern int mpDaemonize(void);
 extern int mpLockPossess(_DIR lockFile);
+
+class GPIO {
+private:
+    static const _FD _export;
+    static const _FD _unexport;
+
+    _FD _r_gpioDirection, _w_gpioDirection;
+    _FD _gpioValue;
+    _FD _gpioEdge;
+
+    int _direction;
+    int _value;
+
+    int index;
+
+    char _option[8];
+    
+    static bool _register(const _FD, const int);
+
+    static bool _exportGPIO(const int);
+    static bool _unexportGPIO(const int);
+
+    bool _setGPIO(_FD, const char *);
+
+    bool _setDirection(const int);
+    bool _setValue(const int);
+    bool _setEdge(const char *);
+
+    bool _getOption(_FD);
+
+public:
+    GPIO(const unsigned int);
+    ~GPIO();
+
+    GPIO &operator = (int);
+
+    bool output();
+    bool input();
+
+    bool pullUp();
+    bool pullDown();
+
+    int getValue() const;
+    int getDirection() const;
+
+    bool irqNone();
+    bool irqRising();
+    bool irqFalling();
+    bool irqBoth();
+};
+
+#include "gpio.cpp"
 
 #endif

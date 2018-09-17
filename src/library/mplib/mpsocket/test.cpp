@@ -28,6 +28,7 @@
 
 int main(int argc, char *argv[])
 {
+    // sizeof(GPIO);
     // std::string str("192.168.1.147:");
     // std::regex rgx("((25[0-5]|2[0-4]\\d|[0-1]?\\d\\d?)($|(?!\\.$)\\.)){4}");
     // std::smatch res;
@@ -43,45 +44,56 @@ int main(int argc, char *argv[])
     // std::cout << res.str(4) << std::endl;
     // std::cout << res.str(5) << std::endl;
 
-    int fd, n;
-    char data[4096];
-    char str[] = "msfdkm\n";
-    FILE *fp, *fp1;
+    // if((fexport = open("/sys/class/gpio/export", O_WRONLY)) < 0)
+    //     perror("open");
+    // if(write(fexport, "36", 8) < 0)
+    //     perror("write");
 
-    fd = open("testfile", O_RDWR);
+    // if((fd1 = open("/sys/class/gpio/gpio36/value", O_WRONLY)) < 0)
+    //     perror("open d");
 
-    if((fp = fdopen(fd, "r")) == NULL){
-        perror("fdopen error");
-        return -1;
+    while(1) {
+        // memset(c, 0, 8);
+        // if((fd = open("/sys/class/gpio/gpio36/value", O_RDONLY)) < 0)
+        //     perror("open d");
+
+        // if(write(fd1, "1", 8) < 0)
+        //     perror("write d");
+        // if(read(fd, c, sizeof(c)) < 0)
+        //     perror("read d");
+        // printf("vlu: %s\n", c);
+
+        // close(fd);
+        // sleep(1);
+
+        // if((fd = open("/sys/class/gpio/gpio36/value", O_RDONLY)) < 0)
+        //     perror("open d");
+
+        // if(write(fd1, "0", 8) < 0)
+        //     perror("write d");
+        // if(read(fd, c, sizeof(c)) < 0)
+        //     perror("read d");
+        // printf("vlu: %s\n", c);
+        // close(fd);
     }
-    if((fp1 = fdopen(fd, "w")) == NULL){
-        perror("fdopen error");
-        return -1;
-    }
-    close(fd);
 
-    // if(fputs(str, fp1) < 0)
-    //     perror("fputs");
+    // close(fd);
 
-    // while(fgets(data, 4096, fp)){
-    //     std::cout << data;
-    // }
+    // if((fd = open("/sys/class/gpio/gpio36/value", O_RDWR)) < 0)
+    //     perror("open v");
 
-    if((n = fread(data, 4096, 1, fp)) >= 0)
-        std::cout << data << std::endl;
-    else
-        perror("fread");
-    perror("fread");
-    printf("%d\n", n);
     // MPServerSocket svr(4001);
     // MPServiceSocket ser;
 
     // svr.setBlock();
-    // ser = 2;
+    // ser = -2;
     // if(ser)
     //     std::cout << "ser" << std::endl;
     // else
     //     std::cout << "!ser" << std::endl;
+
+    // if(ser.Close() == false)
+    //     perror("close");
 
     // if(ser = svr.Accept())
     //     perror("accept");

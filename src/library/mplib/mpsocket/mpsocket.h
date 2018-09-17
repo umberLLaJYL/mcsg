@@ -79,7 +79,7 @@ protected:
 
     template <typename ADDR>
     bool _bind(ADDR serverAddress) {
-        return bind(sockfd, (struct sockaddr *)&serverAddress, sizeof(serverAddress));
+        return !bind(sockfd, (struct sockaddr *)&serverAddress, sizeof(serverAddress));
     }
 
     template <typename ADDR>
@@ -92,7 +92,7 @@ public:
     ~_MPServerSocket() {}
 
     bool Listen(){
-        return listen(sockfd, backlog);
+        return !listen(sockfd, backlog);
     }
     
     Sock Accept() {
@@ -124,7 +124,7 @@ public:
     ~_MPServiceSocket() {}
 
     bool getPeerName() {
-        return getpeername(sockfd, (struct sockaddr *)&peer, sizeof(peer));
+        return !getpeername(sockfd, (struct sockaddr *)&peer, sizeof(peer));
     }
 };
 
@@ -142,7 +142,7 @@ public:
     ~_MPClientSocket();
 
     bool Connect() {
-        connect(sockfd, (struct sockaddr *)destination, sizeof(destination));
+        !connect(sockfd, (struct sockaddr *)destination, sizeof(destination));
     }
 };
 

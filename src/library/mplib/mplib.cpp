@@ -1,3 +1,6 @@
+#ifndef _MPLIB_CPP
+#define _MPLIB_CPP
+
 #include "mplib.h"
 
 /**********************************************************************/
@@ -196,3 +199,5 @@ extern int mpLockPossess(_DIR lockFile)
         return -1;
     return 0;
 }
+
+#endif

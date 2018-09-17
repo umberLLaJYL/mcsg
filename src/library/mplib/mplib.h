@@ -92,35 +92,30 @@ private:
     static const _FD _export;
     static const _FD _unexport;
 
-    _FD _r_gpioDirection, _w_gpioDirection;
+    _FD _gpioDirection;
     _FD _gpioValue;
     _FD _gpioEdge;
 
-    int _direction;
-    int _value;
-
     int index;
-
-    char _option[8];
     
     static bool _register(const _FD, const int);
 
     static bool _exportGPIO(const int);
     static bool _unexportGPIO(const int);
 
-    bool _setGPIO(_FD, const char *);
+    bool _setGPIO(_FD, const std::string &);
 
-    bool _setDirection(const int);
-    bool _setValue(const int);
-    bool _setEdge(const char *);
-
-    bool _getOption(_FD);
+    bool _getOption(const std::string &, std::string &);
 
 public:
-    GPIO(const unsigned int);
+    GPIO(const int);
+    GPIO(const int, const std::string &);
+    GPIO(const int, const std::string &, const int);
     ~GPIO();
 
-    GPIO &operator = (int);
+    GPIO &operator = (const int);
+    bool operator == (const int);
+    bool operator != (const int);
 
     bool output();
     bool input();
@@ -128,8 +123,9 @@ public:
     bool pullUp();
     bool pullDown();
 
-    int getValue() const;
-    int getDirection() const;
+    int getIndex() const;
+    int getValue();
+    int getDirection();
 
     bool irqNone();
     bool irqRising();

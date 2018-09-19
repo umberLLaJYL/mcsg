@@ -42,27 +42,28 @@ int main(int argc, char *argv[])
 
     // if(str == "none\n")
     //     printf("dsdsd]n\n");
-    
-    GPIO *io36 = new GPIO(64);
 
-    io36->output();
+    int i;
+    
+    GPIO io64(64, "none");
+    GPIO io65(65, "none");
+    GPIO io66(66, "none");
+    GPIO io67(67, "rising");
 
     while(1) {
         sleep(1);
-        if(io36->getDirection() == 1)
-            std::cout << "io out" << std::endl;
-        else if(io36->getDirection() == 0)
-            std::cout << "io in" << std::endl;
-        else if(io36->getDirection() == -1)
-            std::cout << "error" << std::endl;
+        // if((i = io36.getDirection()) == 1)
+        //     std::cout << "io out" << std::endl;
+        // else if(i == 0)
+        //     std::cout << "io in" << std::endl;
+        // else if(i == -1)
+        //     std::cout << "error" << std::endl;
 
         // sleep(1);
         // io36->pullUp();
         // sleep(1);
         // io36->pullDown();
     }
-
-    delete io36;
     
     return 0;
 }

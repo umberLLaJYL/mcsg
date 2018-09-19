@@ -1,14 +1,5 @@
-#include "../mpobj.h"
-
-
-class Control
-{
-private:
-    /* data */
-public:
-    Control(/* args */);
-    ~Control();
-};
+#include "../gpio/gpio.h"
+#include "control.h"
 
 Control::Control(/* args */)
 {

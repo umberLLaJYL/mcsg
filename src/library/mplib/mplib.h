@@ -23,9 +23,9 @@
 #include <vector>
 #include <cstddef>
 #include <thread>
-#include <map>
 
 #include "mpsocket/mpsocket.h"
+#include "gpio/gpio.h"
 
 // #include "../murmurhash3/murmurhash3.h"
 
@@ -86,53 +86,5 @@ typedef in_port_t _PORT;
 extern void (*mpSignal(int actSignal, void (*handler)(int)))(int);
 extern int mpDaemonize(void);
 extern int mpLockPossess(_DIR lockFile);
-
-class GPIO {
-private:
-    static const _FD _export;
-    static const _FD _unexport;
-
-    _FD _gpioDirection;
-    _FD _gpioValue;
-    _FD _gpioEdge;
-
-    int index;
-    
-    static bool _register(const _FD, const int);
-
-    static bool _exportGPIO(const int);
-    static bool _unexportGPIO(const int);
-
-    bool _setGPIO(_FD, const std::string &);
-
-    bool _getOption(const std::string &, std::string &);
-
-public:
-    GPIO(const int);
-    GPIO(const int, const std::string &);
-    GPIO(const int, const std::string &, const int);
-    ~GPIO();
-
-    GPIO &operator = (const int);
-    bool operator == (const int);
-    bool operator != (const int);
-
-    bool output();
-    bool input();
-
-    bool pullUp();
-    bool pullDown();
-
-    int getIndex() const;
-    int getValue();
-    int getDirection();
-
-    bool irqNone();
-    bool irqRising();
-    bool irqFalling();
-    bool irqBoth();
-};
-
-#include "gpio.cpp"
 
 #endif

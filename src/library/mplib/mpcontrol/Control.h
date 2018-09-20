@@ -2,25 +2,56 @@
 #define _CONTROL_H
 
 #include <map>
+#include <vector>
+#include <iostream>
 
-class Action {
+#include "../gpio/gpio.h"
+
+class IoControl {
 private:
-    
+    double status:
+
+    std::vector<GPIO> pin;
+    std::map<std::string, std::string> sequence;
+
 public:
-    Action();
-    ~Action();
+    IoControl(const std::string &);
+    ~IoControl();
+
+    bool operator == (double);
+    bool operator != (double);
+    bool operator [] (double);
+
+    bool execute(const std::string &);
+
+    double getStatus();
+    int getStatus(std::size_t);
 };
 
-class Control {
+class AdControl {
 private:
-    std::map<> pin;
-
+    /* data */
 public:
-    Control();
-    ~Control();
-
+    AdControl(/* args */) { }
+    ~AdControl() { }
 };
 
-#include "control.cpp"
+class DaControl {
+private:
+    /* data */
+public:
+    DaControl(/* args */) { }
+    ~DaControl() { }
+};
+
+class SerialControl {
+private:
+    /* data */
+public:
+    SerialControl(/* args */) { }
+    ~SerialControl() { }
+};
+
+#include "iocontrol.cpp"
 
 #endif

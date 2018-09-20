@@ -1,5 +1,10 @@
-#ifndef _GPIO_H_
-#define _GPIO_H_
+#ifndef _GPIO_H
+#define _GPIO_H
+
+#include <unistd.h>
+#include <fcntl.h>
+
+#include <string>
 
 class GPIO {
 private:

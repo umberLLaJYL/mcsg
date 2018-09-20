@@ -1,9 +1,6 @@
 #ifndef _GPIO_CPP_
 #define _GPIO_CPP_
 
-#include <unistd.h>
-#include <string.h>
-
 #include "gpio.h"
 
 const int GPIO::_export = open("/sys/class/gpio/export", O_WRONLY);

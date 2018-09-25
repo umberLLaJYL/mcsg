@@ -9,23 +9,23 @@
 
 class IoControl {
 private:
-    double status:
+    double status;
 
-    std::vector<GPIO> pin;
-    std::map<std::string, std::string> sequence;
+    // std::vector<GPIO> pin;
+    // std::map<std::string, std::string> sequence;
 
 public:
     IoControl(const std::string &);
     ~IoControl();
 
-    bool operator == (double);
-    bool operator != (double);
-    bool operator [] (double);
+    // bool operator == (double);
+    // bool operator != (double);
+    // bool operator [] (double);
 
-    bool execute(const std::string &);
+    // bool execute(const std::string &);
 
-    double getStatus();
-    int getStatus(std::size_t);
+    // double getStatus();
+    // int getStatus(std::size_t);
 };
 
 class AdControl {

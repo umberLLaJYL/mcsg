@@ -37,77 +37,6 @@
 using namespace rapidjson;
 
 
-
-class test : public std::fstream{
-
-    const std::string prefix;
-
-private:
-    std::string identity;
-
-public:
-    test(const std::string &);
-    ~test();
-
-    const std::string &getIdentity() const {
-        return this->identity;
-    }
-};
-
-test::test(const std::string &name) : prefix("test")
-{
-    char buf[4096];
-    identity = name;
-
-    this->open(prefix+identity);
-    this->read(buf, 4096);
-    std::cout << buf << std::endl;
-}
-
-test::~test()
-{
-}
-
-
-
-class a
-{
-private:
-    /* data */
-    int head;
-public:
-    a(int b) : head(b) {
-        std::cout << "aaaa" << std::endl;
-    }
-    ~a();
-
-    bool operator == (int ret) const {
-        if (this->head == ret)
-            return true;
-        return false;
-    }
-
-    bool operator == (const a *ret) const {
-        if (this != ret)
-            return NULL;
-    }
-};
-
-a::~a()
-{
-}
-
-class b : public a {
-public:
-    b() : a::a(8) {
-        std::cout << "aaaa" << std::endl;
-    }
-    ~b();
-};
-
-
-
-
 int main(int argc, char *argv[])
 {
     // struct logopt logoption, *teststr;
@@ -117,12 +46,6 @@ int main(int argc, char *argv[])
     // };
     char buf[4096];
     StringBuffer sbuf;
-
-    char str[4096];
-    std::string strbuf;
-
-    FILE *fp;
-
     
     Document doc;
     Document::AllocatorType &allocator = doc.GetAllocator();
@@ -131,8 +54,6 @@ int main(int argc, char *argv[])
     doc.AddMember("a1", "b1", allocator);
     doc.AddMember("a2", "b2", allocator);
     doc.AddMember("a3", "b3", allocator);
-
-
 
     PrettyWriter<StringBuffer> pretty_writer(sbuf);
     pretty_writer.SetMaxDecimalPlaces(4);
@@ -145,11 +66,6 @@ int main(int argc, char *argv[])
     fout.close();
 
     // sprintf(str, "abcdefghijklmnopqrstuvwxyz\n");
-
-    a aaa(9);
-
-    if(aaa == 9)
-        std::cout << "null" << std::endl;
 
 
     // vector<string> sss{"aaa", "bbb", "ccc"};

@@ -11,13 +11,13 @@ class IoControl {
 private:
     double status;
 
-    // std::vector<GPIO> pin;
+    std::vector<GPIO> pin;
     // std::map<std::string, std::string> sequence;
 
 public:
     IoControl(const std::string &);
     ~IoControl();
-
+    
     // bool operator == (double);
     // bool operator != (double);
     // bool operator [] (double);

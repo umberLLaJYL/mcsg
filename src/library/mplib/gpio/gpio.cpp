@@ -1,5 +1,5 @@
-#ifndef _GPIO_CPP_
-#define _GPIO_CPP_
+#ifndef _GPIO_CPP
+#define _GPIO_CPP
 
 #include "gpio.h"
 
@@ -61,6 +61,8 @@ GPIO::GPIO(const int idx) : index(idx)
 
     snprintf(opt, sizeof(opt), "%d", idx);
     dir += opt;
+
+    printf("gpio init\n");
 
     this->_gpioDirection = open((dir+"/direction").c_str(), O_WRONLY);
     this->_gpioValue = open((dir+"/value").c_str(), O_WRONLY);
@@ -148,7 +150,7 @@ void GPIO::reexport(const int idx)
     close(_gpioDirection);
     close(_gpioValue);
     close(_gpioEdge);
-    this->_unexportGPIO(index);
+    this->_unexportGPIO(this->index);
 
     this->index = idx;
     this->_exportGPIO(idx);
@@ -168,7 +170,7 @@ void GPIO::reexport(const int idx, const std::string &option)
     close(_gpioDirection);
     close(_gpioValue);
     close(_gpioEdge);
-    this->_unexportGPIO(index);
+    this->_unexportGPIO(this->index);
 
     this->_exportGPIO(idx);
 
@@ -194,7 +196,7 @@ void GPIO::reexport(const int idx, const int vlu)
     close(_gpioDirection);
     close(_gpioValue);
     close(_gpioEdge);
-    this->_unexportGPIO(index);
+    this->_unexportGPIO(this->index);
 
     this->_exportGPIO(idx);
 

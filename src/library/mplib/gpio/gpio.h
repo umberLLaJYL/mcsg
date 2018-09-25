@@ -27,6 +27,7 @@ private:
     bool _getOption(const std::string &, std::string &);
 
 public:
+    GPIO() = default;
     GPIO(const int);
     GPIO(const int, const std::string &);
     GPIO(const int, const int);

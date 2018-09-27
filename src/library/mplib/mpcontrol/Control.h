@@ -6,26 +6,28 @@
 #include <iostream>
 
 #include "../gpio/gpio.h"
+#include "../../json/rapidjson/document.h"
 
 class IoControl {
 private:
-    double status;
+    int pinAct;
+    int pinStat;
 
     std::vector<GPIO> pin;
-    // std::map<std::string, std::string> sequence;
+    std::map<std::string, int> sequence;
 
 public:
     IoControl(const std::string &);
     ~IoControl();
     
-    // bool operator == (double);
-    // bool operator != (double);
-    // bool operator [] (double);
+    // bool operator == (int);
+    // bool operator != (int);
+    // bool operator [] (int);
 
-    // bool execute(const std::string &);
+    bool execute(const std::string &);
 
-    // double getStatus();
-    // int getStatus(std::size_t);
+    int getStatus();
+    int getStatus(std::size_t);
 };
 
 class AdControl {

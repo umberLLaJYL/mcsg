@@ -84,7 +84,7 @@ GPIO::GPIO(const int idx, const std::string& option) : index(idx)
     this->_gpioEdge = open((dir+"/edge").c_str(), O_WRONLY);
 
     if(option == "out")
-        write(this->_gpioDirection, option.c_str(), 8);
+        write(this->_gpioDirection, "out", 8);
     else {
         write(this->_gpioDirection, "in", 8);
         write(this->_gpioEdge, option.c_str(), 8);        

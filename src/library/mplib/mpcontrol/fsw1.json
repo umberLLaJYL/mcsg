@@ -1,5 +1,9 @@
 {
     "pin": [36, 64, 65, 66, 67],
-    "sequence": [9, 6],
-    "status": "0x08"
+    "dir": ["out", "in", "out", "in", "out"],
+    "status": 10,
+    "sequence": {
+        "pri": 6,
+        "res": 9
+    }
 }

@@ -5,12 +5,13 @@ using namespace rapidjson;
 
 int main(int argc, char *argv[])
 {
-    int i = 0;
+    int i = 0, a;
     FILE *fp;
     char file[65535]={0}, line[4096];
     Document ctrl;
     std::vector<GPIO> cpin;
-    GPIO *gpio = new GPIO(36, 1);
+    std::map<std::string, int> sequence;
+    std::map<std::string, int>::iterator element;
 
     fp = fopen("./fsw1.json", "r");
 
@@ -23,22 +24,31 @@ int main(int argc, char *argv[])
 
     printf("%s\n", file);
 
-    for(auto &pin : ctrl["pin"].GetArray()){
-        // printf("%d\n", pin.GetInt());
-        // gpio.reexport(pin.GetInt());
-        cpin.push_back(GPIO(pin.GetInt()));
-    }
+    for(SizeType cnt = 0; cnt != ctrl["pin"].Size(); ++cnt)
+        cpin.push_back(GPIO());
+
+    for(SizeType cnt = 0; cnt != ctrl["pin"].Size(); ++cnt)
+        cpin[cnt].reexport(ctrl["pin"][cnt].GetInt(), ctrl["dir"][cnt].GetString());
+
+    for(auto &seq : ctrl["sequence"].GetObject())
+        sequence.insert({seq.name.GetString(), seq.value.GetInt()});
+
+    std::string str("pri");
+    if((element = sequence.find(str)) != sequence.end())
+        printf("k: %d, size: %d\n", element->second, cpin.size());
+
+    if(cpin[1].pullDown() == false)
+        perror("pulldown");
 
     while(1) {
         ++i;
         sleep(1);
-        if(i > 10)
+        if(i > 5)
             break;
         cpin[0].pullDown();
         sleep(1);
         cpin[0].pullUp();
     }
-    delete gpio;
 
     return 0;
 }

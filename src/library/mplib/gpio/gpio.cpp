@@ -62,8 +62,6 @@ GPIO::GPIO(const int idx) : index(idx)
     snprintf(opt, sizeof(opt), "%d", idx);
     dir += opt;
 
-    printf("gpio init\n");
-
     this->_gpioDirection = open((dir+"/direction").c_str(), O_WRONLY);
     this->_gpioValue = open((dir+"/value").c_str(), O_WRONLY);
     this->_gpioEdge = open((dir+"/edge").c_str(), O_WRONLY);
@@ -228,6 +226,10 @@ bool GPIO::input()
 {
     return this->_setGPIO(_gpioDirection, "in");
 }
+bool GPIO::setDirection(const char *dir)
+{
+    return this->_setGPIO(_gpioDirection, dir);
+}
 
 bool GPIO::pullUp()
 {
@@ -236,6 +238,13 @@ bool GPIO::pullUp()
 bool GPIO::pullDown()
 {
     return this->_setGPIO(_gpioValue, "0");
+}
+bool GPIO::setValue(int vlu)
+{
+    if(vlu)
+        return this->_setGPIO(_gpioValue, "1");
+    else
+        return this->_setGPIO(_gpioValue, "0");
 }
 
 int GPIO::getIndex() const

@@ -44,9 +44,11 @@ public:
 
     bool output();
     bool input();
+    bool setDirection(const char *);
 
     bool pullUp();
     bool pullDown();
+    bool setValue(int);
 
     int getIndex() const;
     int getValue();

@@ -12,7 +12,6 @@ _MPSocket::~_MPSocket()
     this->Close();
 }
 
-
 _MPSocket::operator bool() const
 {
     if(this->sockfd < 0)

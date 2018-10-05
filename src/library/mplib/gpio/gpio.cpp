@@ -170,6 +170,7 @@ void GPIO::reexport(const int idx, const std::string &option)
     close(_gpioEdge);
     this->_unexportGPIO(this->index);
 
+    this->index = idx;
     this->_exportGPIO(idx);
 
     snprintf(opt, sizeof(opt), "%d", idx);
@@ -196,6 +197,7 @@ void GPIO::reexport(const int idx, const int vlu)
     close(_gpioEdge);
     this->_unexportGPIO(this->index);
 
+    this->index = idx;
     this->_exportGPIO(idx);
 
     snprintf(opt, sizeof(opt), "%d", idx);

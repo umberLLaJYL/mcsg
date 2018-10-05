@@ -1,8 +1,6 @@
 #ifndef _CONTROL_H
 #define _CONTROL_H
 
-#define MP_BIG_ENDIAN
-
 #include <map>
 #include <vector>
 #include <iostream>

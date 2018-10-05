@@ -1,13 +1,15 @@
 {
     "pin": [36, 64, 65, 66, 67],
-    "dir": ["out", "in", "out", "in", "out"],
+    "dir": ["out", "in", "in", "in", "in"],
     "sequence": {
         "pri": 1,
-        "res": 16
+        "res": 16,
+        "all": 31,
+        "new": [32, 31, 2]
     },
     "parameter": {
         "status": 10,
-        "ready": 2,
+        "ready": 31,
         "error": 5
     }
 }

@@ -10,7 +10,7 @@ private:
     std::string alias;
 
     std::vector<GPIO> pin;
-    std::map<std::string, int> sequence;
+    std::map<std::string, std::vector<int>> sequence;
     std::map<std::string, std::pair<int, int>> parameter;
 
     bool _initialize(const std::string &prefix) {
@@ -35,8 +35,11 @@ private:
         this->pinNum = this->pin.size();
         this->alias = prefix;
 
-        for(auto &seq : ioCtrl["sequence"].GetObject())
-            this->sequence.insert({seq.name.GetString(), seq.value.GetInt()});
+        for(auto &seq : ioCtrl["sequence"].GetObject()) {
+            auto order = this->sequence.insert({seq.name.GetString(), {}});
+            for(auto &element: seq.value.GetArray())
+                order.first->second.push_back(element.GetInt());
+        }
 
         for(auto &parm : ioCtrl["parameter"].GetObject())
             this->parameter.insert({parm.name.GetString(), {parm.value.GetInt(), 0}});
@@ -60,6 +63,38 @@ private:
         }
     }
 
+    bool _execute(const std::string &order) {
+        std::map<std::string, std::vector<int>>::iterator element;
+
+        if((element = this->sequence.find(order)) == this->sequence.end())
+            return false;
+
+        switch(element->second.size()) {
+            case 1: {
+                for(int pinSelect = 0; pinSelect != this->pinNum; ++pinSelect)
+                    this->pin[pinSelect].setValue(element->second[0] & (0x01 << pinSelect));
+                break;
+            }
+
+            case 3: {
+                for(int pinSelect = 0; pinSelect != this->pinNum; ++pinSelect) {
+                    if(element->second[0] & (0x01 << pinSelect)) {
+                        if(element->second[1] & (0x01 << pinSelect))
+                            this->pin[pinSelect].setDirection("out");
+                        else
+                            this->pin[pinSelect].setDirection("in");
+                        this->pin[pinSelect].setValue(element->second[2] & (0x01 << pinSelect));
+                    }
+                }
+                break;
+            }
+
+            default: break;
+        }    
+        this->_updata();
+        return true;
+    }
+
     bool _setPinDirection(int pinIdx, const char *dir) {
         if((pinIdx < 1) || (pinIdx > this->pinNum))
             return false;
@@ -72,7 +107,7 @@ private:
         return this->pin[pinIdx-1].setValue(vlu);
     }
 
-    int _get(const std::string &parm) {
+    int _getParameter(const std::string &parm) {
         std::map<std::string, std::pair<int, int>>::iterator element = this->parameter.find(parm);
         if(element == this->parameter.end())
             return 0xff;
@@ -95,7 +130,7 @@ public:
     }
 
     int operator [] (const std::string parm) {
-        return this->get(parm);
+        return this->getParameter(parm);
     }
 
     void reinitialize(const std::string &prefix) {
@@ -112,14 +147,7 @@ public:
     }
 
     bool execute(const std::string &order) {
-        std::map<std::string, int>::iterator element = this->sequence.find(order);
-        if(element == this->sequence.end())
-            return false;
-            
-        for(int num = 0; num != this->pinNum; ++num)
-            this->pin[num].setValue(element->second & (0x01 << num));
-        this->_updata();
-        return true;
+        return this->_execute(order);
     }
 
     bool setPinDirection(int pinIdx, const char *dir) {
@@ -130,8 +158,8 @@ public:
         return this->_setPinValue(pinIdx, vlu);
     }
 
-    int get(const std::string &parm) {
-        return this->_get(parm);
+    int getParameter(const std::string &parm) {
+        return this->_getParameter(parm);
     }
 
     int getPinValue(int pinIdx) {

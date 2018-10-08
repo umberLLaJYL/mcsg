@@ -2,10 +2,11 @@
     "pin": [36, 64, 65, 66, 67],
     "dir": ["out", "in", "in", "in", "in"],
     "sequence": {
-        "pri": 1,
-        "res": 16,
-        "all": 31,
-        "new": [32, 31, 2]
+        "pri": [1],
+        "res": [16],
+        "all": [31],
+        "seq-pri": [1, 1, 0],
+        "seq-res": [1, 1, 1]
     },
     "parameter": {
         "status": 10,

@@ -14,10 +14,10 @@ int main(int argc, char *argv[])
         sleep(2);
         if(i > 5)
             break;
-        fsw.execute("pri");
+        fsw.execute("seq-pri");
         printf("0x%04x\n", fsw["ready"]);
         sleep(2);
-        fsw.execute("res");
+        fsw.execute("seq-res");
         printf("0x%04x\n", fsw["ready"]);
     }
 

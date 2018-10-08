@@ -120,7 +120,8 @@ GPIO &GPIO::operator = (const int vlu)
 {
     if(vlu)
         this->_setGPIO(_gpioValue, "1");
-    this->_setGPIO(_gpioValue, "0");
+    else
+        this->_setGPIO(_gpioValue, "0");
     return *this;
 }
 

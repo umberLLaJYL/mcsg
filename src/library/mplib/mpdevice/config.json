@@ -1,0 +1,22 @@
+{
+    "pin": {
+        "run": [36, "out"],
+        "key1": [66, "in"]
+    },
+    "subgroup": {
+        "io": ["fsw1"],
+        "serial": [],
+        "adc": [],
+        "dac": []
+    },
+    "parameter": {
+        "addr": 1
+    },
+    "operate": {
+        "pri": [1],
+        "res": [16],
+        "all": [31],
+        "seq-pri": [1, 1, 0],
+        "seq-res": [1, 1, 1]
+    }
+}

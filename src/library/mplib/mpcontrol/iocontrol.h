@@ -21,7 +21,6 @@ private:
 
         while(std::getline(configFile, line))
             file += line;
-        
         configFile.close();
 
         ioCtrl.Parse(file.c_str());

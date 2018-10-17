@@ -1,0 +1,16 @@
+subgroup->pd=(0,1,2,3,4,5,6,7)
+subgroup->osw=(0,1)
+subgroup->fsw=()
+subgroup->os=()
+subgroup->voa()
+
+operate[pd(0,1,2,3,4,5,6,7)];
+
+if[pd(0,1,2,3)=ABNORM]
+    then[osw(0)>REV];
+if[pd(0,1,2,3)=NORM]
+    then[osw(0)>PRI];
+if[pd(4,5,6,7)=ABNORM]
+    then[osw(1)>REV];
+if[pd(4,5,6,7)=NORM]
+    then[osw(1)>PRI];

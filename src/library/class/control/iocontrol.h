@@ -6,8 +6,9 @@
 class IoControl {
 
 private:
+    bool valid;
     unsigned int pinNum;
-    std::string alias;
+    std::string identification;
 
     std::vector<GPIO> pin;
     std::map<std::string, std::vector<int>> sequence;
@@ -19,30 +20,42 @@ private:
         std::string file;
         rapidjson::Document ioCtrl;
 
+        this->identification = prefix;
+        this->valid = false;
+        this->pinNum = 0;
+
+        if(!configFile.is_open())
+            return false;
+      
         while(std::getline(configFile, line))
             file += line;
         configFile.close();
 
         ioCtrl.Parse(file.c_str());
 
-        for(rapidjson::SizeType cnt = 0; cnt != ioCtrl["pin"].Size(); ++cnt)
+        if(!ioCtrl.HasMember("pin"))
+            return false;
+        for(auto &io : ioCtrl["pin"].GetObject())
             this->pin.push_back(GPIO());
+        for(auto &io : ioCtrl["pin"].GetObject()) {
+            this->pin[this->pinNum].reexport(atoi(io.name.GetString()), io.value.GetString());
+            ++this->pinNum;
+        }
 
-        for(rapidjson::SizeType cnt = 0; cnt != ioCtrl["pin"].Size(); ++cnt)
-            this->pin[cnt].reexport(ioCtrl["pin"][cnt].GetInt(), ioCtrl["dir"][cnt].GetString());
-
-        this->pinNum = this->pin.size();
-        this->alias = prefix;
-
+        if(!ioCtrl.HasMember("sequence"))
+            return false;
         for(auto &seq : ioCtrl["sequence"].GetObject()) {
             auto order = this->sequence.insert({seq.name.GetString(), {}});
-            for(auto &element: seq.value.GetArray())
+            for(auto &element : seq.value.GetArray())
                 order.first->second.push_back(element.GetInt());
         }
 
+        if(!ioCtrl.HasMember("parameter"))
+            return false;
         for(auto &parm : ioCtrl["parameter"].GetObject())
             this->parameter.insert({parm.name.GetString(), {parm.value.GetInt(), 0}});
-
+        
+        this->valid = true;
         this->_updata();
     }
 
@@ -63,9 +76,8 @@ private:
     }
 
     bool _execute(const std::string &order) {
-        std::map<std::string, std::vector<int>>::iterator element;
-
-        if((element = this->sequence.find(order)) == this->sequence.end())
+        std::map<std::string, std::vector<int>>::iterator element = this->sequence.find(order);
+        if(element == this->sequence.end())
             return false;
 
         switch(element->second.size()) {
@@ -120,7 +132,7 @@ private:
     }
 
 public:
-    IoControl(const std::string &prefix) : pinNum(0), alias(prefix) {
+    IoControl(const std::string &prefix) : valid(false), pinNum(0), identification(prefix) {
         this->_initialize(prefix);
     }
 
@@ -147,6 +159,10 @@ public:
 
     bool execute(const std::string &order) {
         return this->_execute(order);
+    }
+
+    bool isValid() const {
+        return this->valid;
     }
 
     bool setPinDirection(int pinIdx, const char *dir) {

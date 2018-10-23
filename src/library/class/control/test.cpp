@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     int i = 0;
 
-    IoControl fsw("fsw11");
+    Control fsw("fsw11");
 
     // while(1) {
     //     ++i;

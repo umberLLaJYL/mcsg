@@ -1,10 +1,9 @@
 #ifndef _INTEGRATED_H
 #define _INTEGRATED_H
 
-#include "../mpcontrol/control.h"
+#include "subgroup.h"
 
 class Integrated {
-
 private:
     std::size_t countAbnormality;
     std::size_t runtime;
@@ -12,8 +11,7 @@ private:
     std::string information;
     std::string status;
 
-    std::map<std::string, GPIO> pin;
-    std::map<std::string, IoControl> ioControlGroup;
+    Subgroup subgroup;
 
     std::map<std::string, double> parameter;
     std::map<std::string, std::string> reference;
@@ -42,7 +40,7 @@ private:
             
             if(group.HasMember("io"))
                 for(auto &control : group["io"].GetArray())
-                    this->ioControlGroup.insert({control.GetString(), IoControl(control.GetString())});
+                    this->subgroup.insert({control.GetString(), Control(control.GetString())});
         }
     }
     

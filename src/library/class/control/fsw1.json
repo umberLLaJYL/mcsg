@@ -1,4 +1,10 @@
 {
+    "peripheral": {
+        "io": "enable",
+        "adc": "disable",
+        "dac": "disable",
+        "serial": "disable"
+    },
     "pin": {
         "36": "out",
         "64": "in",

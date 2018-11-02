@@ -1,6 +1,7 @@
-#ifndef _CONTROL_H
-#define _CONTROL_H
+#ifndef _CONTROLLER_H
+#define _CONTROLLER_H
 
+#include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -11,6 +12,40 @@
 #include "serial/serial.h"
 #include "../../json/rapidjson/document.h"
 
+class _HardwareController {
+private:
+
+public:
+    _HardwareController() {
+
+    }
+    ~_HardwareController() {
+
+    }
+
+    virtual bool execute(const std::string &) = 0;
+};
+
+
+class _ControllerRegister {
+private:
+    /* data */
+public:
+    _ControllerRegister(/* args */) { }
+    ~_ControllerRegister() { }
+};
+
+
+class _StatusController {
+private:
+
+protected:
+
+public:
+    _StatusController(/* args */) { }
+    ~_StatusController() { }
+
+};
 
 class Initializer {
 private:
@@ -207,38 +242,3 @@ public:
 // };
 
 #endif
-
-#define MAXPAIR 10
-#define MAXVALUE 10
-
-#define MAXKEYLEN 8
-#define MAXVALUELEN 24
-
-class Key {
-private:
-    int valueCnt;
-    char key[MAXKEYLEN];
-};
-
-class JsonPair {
-private:
-    int valueCnt;
-
-    Key key;
-    Value value[MAXVALUE];
-};
-
-class Value {
-    JsonPair value[MAXVALUELEN];
-};
-
-class Json {
-private:
-    int pairCnt;
-    JsonPair pair[MAXPAIR];
-
-public:
-    char *pase(const char *);
-    bool addMember(JsonPair pair);
-    char *find(const char *);
-};

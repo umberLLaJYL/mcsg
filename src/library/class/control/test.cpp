@@ -1,79 +1,90 @@
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include <fstream>
+#include <string>
+#include <map>
 
-#include "pin/pin.h"
-#include "adc/adc.h"
-#include "dac/dac.h"
-#include "serial/serial.h"
+#include <unistd.h>
+#include <fcntl.h>
+
+// #include "pin/pin.h"
+// #include "adc/adc.h"
+// #include "dac/dac.h"
+// #include "serial/serial.h"
 #include "../../json/rapidjson/document.h"
 
 using namespace rapidjson;
 
-class Control {
-private:
-    GPIO gpio;
-    
-protected:
+#define GPIODir "/sys/class/gpio/gpio/direction"
+#define PinAct(action) GPIODir#action
 
-public:
-    Control() {
-
-    }
-    ~Control() {
-
-    }
-
-    // virtual bool initialize(const std::string &file) = 0;
-    // virtual void deinitialize() = 0;
-    virtual bool execute(const std::string &order) = 0;    
-    virtual std::string & get() = 0;    
-};
-
-class Ctrl : public Control {
-public:
-
-    bool execute(const std::string &order) override {
-        std::cout << order << std::endl;
-    }
-
-    std::string &get() override {
-    }
-};
-
-class Ctrl1 : public Control {
-    std::string s;
-
-public:
-    bool execute(const std::string &order) override {
-        s = order;
-        std::cout << "czdcszdcdccsdcsc" << order << std::endl;
-    }
-
-    std::string &get() override {
-        return s;
-    }
-};
-
-int func(Control& c, std::string s)
+const char *func()
 {
-    c.execute(s);
+    std::string str;
+    
+    std::ifstream iodir((str = GPIODir) += std::to_string(66) += "/direction");
+    iodir >> str;
+
+    return str.c_str();
 }
+
+const bool func1(const int idx, const std::map<int, std::pair<int, std::string>> &table)
+{
+    auto element = table.find(idx);
+    return element != table.end();
+}
+
+
+class Test {
+private:
+    std::string str;
+    std::map<std::string, std::string> table;
+
+public:
+    Test(/* args */) {
+        this->str = "asdf";
+        this->table.insert({"bb", "dd"});
+    }
+    ~Test() { }
+
+    void function() {
+        
+    }
+
+    // template<class Controller>
+    // Controller &bind() {
+    //     return this->str;
+    // }
+};
 
 int main(int argc, char *argv[])
 {
-    int i = 0;
-    std::string s;
-    std::vector<Control> group;
-    std::vector<Ctrl1> cgroup;
+    std::string str(GPIODir);
+    int i = 9, fd;
 
-    Ctrl c;
-    Ctrl1 c1;
 
-    // func(group[0], "adnasj");
-    // func(group[1], "adnas1sj");
-    // s = group[1].get();
-    std::cout << s << std::endl;
+    // std::ofstream ofs("/sys/class/gpio/unexport");
+
+    if((fd = open("/sys/class/gpio/gpio66/direction", O_WRONLY)) < 0)
+        perror("open");
+
+    str.replace(20, str.find_last_of("/")-20, std::to_string(65));
+
+    std::cout << str << std::endl;
+
+    sleep(5);
+
+    if((fd = open("/sys/class/gpio/gpio66/direction", O_WRONLY)) < 0)
+        perror("open");
+    // if(write(fd, "88", 8) < 0)
+    //     perror("w");
+
+    // ofs << "88";
+
+    // str = test.bind<std::string>();
+
+    // printf("i: %s\n", str.c_str());
 
     // while(1) {
     //     ++i;

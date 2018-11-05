@@ -63,20 +63,16 @@ int main(int argc, char *argv[])
     std::string str(GPIODir);
     int i = 9, fd;
 
-
     // std::ofstream ofs("/sys/class/gpio/unexport");
 
-    if((fd = open("/sys/class/gpio/gpio66/direction", O_WRONLY)) < 0)
-        perror("open");
+    device.addController<GPIOController>(controllerFactory.createController("fsw1.json"));
+
+
 
     str.replace(20, str.find_last_of("/")-20, std::to_string(65));
 
     std::cout << str << std::endl;
 
-    sleep(5);
-
-    if((fd = open("/sys/class/gpio/gpio66/direction", O_WRONLY)) < 0)
-        perror("open");
     // if(write(fd, "88", 8) < 0)
     //     perror("w");
 

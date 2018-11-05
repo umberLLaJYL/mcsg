@@ -36,14 +36,14 @@ public:
 };
 
 
-class _StatusController {
+class Actor {
 private:
 
 protected:
 
 public:
-    _StatusController(/* args */) { }
-    ~_StatusController() { }
+    Actor(/* args */) { }
+    ~Actor() { }
 
 };
 

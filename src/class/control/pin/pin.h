@@ -8,12 +8,12 @@
 #include <set>
 
 #define WriteLen 8
-#define GPIODir "/sys/class/gpio/gpio"
-#define GPIODirection "/sys/class/gpio/gpiox/direction"
-#define GPIOValue "/value"
-#define GPIOIrq "/edge"
+#define DirGPIO "/sys/class/gpio/gpio"
+#define DirGPIODirection "/sys/class/gpio/gpiox/direction"
+#define DirGPIOValue "/value"
+#define DirGPIOIrq "/edge"
 
-#define pinAct(action) GPIODir#action
+#define pinAct(action) DirGPIO#action
 
 class GPIOExporter {
 private:
@@ -44,9 +44,11 @@ class GPIO {
 private:
     const int index;
     static GPIOExporter exporter;
-    static GPIODirectionController directionController;
+    static GPIODirectionOperator directionOperator;
+    const std::string dd;
     // static GPIODValueController valueController;
     // static PinIrqController irqController;
+    
 
 public:
     GPIO(const int idx) : index(idx) {
@@ -62,13 +64,13 @@ public:
     }
 
     bool output() {
-        return this->directionController.setDirection(this->index, "out");
+        return this->directionOperator.setDirection("out");
     }
     bool input() {
-        return this->directionController.setDirection(this->index, "in");
+        return this->directionOperator.setDirection("in");
     }
     bool setDirection(const char *direction) {
-        return this->directionController.setDirection(this->index, direction);
+        return this->directionOperator.setDirection(direction);
     }
 
     bool pullUp() {
@@ -94,15 +96,15 @@ public:
     }
 
     const std::string &getDirection() {
-        return this->directionController.getDirection(this->index);
+        return this->directionOperator.getDirection();
     }
 
     const std::string &getIrq() {
         
     }
 
-    GPIO &bind(PinDirectionController &pdc) {
-        this->directionController = pdc;
+    GPIO &bind(GPIODirectionOperator &gdc) {
+        this->directionOperator = gdc;
         return *this;
     }
 };

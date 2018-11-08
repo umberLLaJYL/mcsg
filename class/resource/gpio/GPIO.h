@@ -7,48 +7,10 @@
 #include <string>
 #include <set>
 
-#define WriteLen 8
-#define DirGPIO "/sys/class/gpio/gpio"
-#define DirGPIODirection "/sys/class/gpio/gpiox/direction"
-#define DirGPIOValue "/value"
-#define DirGPIOIrq "/edge"
-
-#define pinAct(action) DirGPIO#action
-
-class GPIOExporter {
-private:
-    static const int fdExport, fdUnexport;
-    
-public:
-    GPIOExporter() {
-
-    }
-    ~GPIOExporter() {
-        close(this->fdExport);
-        close(this->fdUnexport);
-    }
-
-    bool exportGPIO(const int idx) {
-        return !(write(this->fdExport, std::to_string(idx).c_str(), WriteLen) < 0);
-    }
-
-    bool unexportGPIO(const int idx) {
-        return !(write(this->fdUnexport, std::to_string(idx).c_str(), WriteLen) < 0);
-    }
-};
-
-const int GPIOExporter::fdExport = open(pinAct(/export), O_WRONLY);
-const int GPIOExporter::fdUnexport = open(pinAct(/unexport), O_WRONLY);
-
 class GPIO {
 private:
     const int index;
-    static GPIOExporter exporter;
-    static GPIODirectionOperator directionOperator;
-    const std::string dd;
-    // static GPIODValueController valueController;
-    // static PinIrqController irqController;
-    
+    static GPIOController &_gpioController;
 
 public:
     GPIO(const int idx) : index(idx) {

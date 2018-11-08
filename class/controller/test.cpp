@@ -12,9 +12,9 @@
 // #include "adc/adc.h"
 // #include "dac/dac.h"
 // #include "serial/serial.h"
-#include "../../json/rapidjson/document.h"
+// #include "../../json/rapidjson/document.h"
 
-using namespace rapidjson;
+// using namespace rapidjson;
 
 #define GPIODir "/sys/class/gpio/gpio/direction"
 #define PinAct(action) GPIODir#action
@@ -48,26 +48,68 @@ public:
     }
     ~Test() { }
 
-    void function() {
-        
-    }
+    virtual void function() = 0;
 
     // template<class Controller>
     // Controller &bind() {
     //     return this->str;
     // }
+
+    const Test1 &operator = (const Test1 &) {
+        
+    }
+};
+
+
+class Test1 : public Test {
+private:
+    /* data */
+public:
+    Test1(/* args */) { }
+    ~Test1() { }
+
+    void function() override {
+        std::cout << "Ddda" << std::endl;
+    }
+
+};
+
+class Test2: public Test {
+private:
+    /* data */
+public:
+    Test2(/* args */) { }
+    ~Test2() { }
+
+    void function() override {
+        std::cout << "ssssa" << std::endl;
+    }
+
+    void function2() {
+
+    }
 };
 
 int main(int argc, char *argv[])
 {
     std::string str(GPIODir);
-    int i = 9, fd;
+    std::map<int, Test *> maptest;
 
     // std::ofstream ofs("/sys/class/gpio/unexport");
 
-    device.addController<GPIOController>(controllerFactory.createController("fsw1.json"));
+    // device.addController<GPIOController>(controllerFactory.createController("fsw1.json"));
 
+    Test1 *test1 = new Test1;
+    Test2 *test2 = new Test2;
 
+    Test1 t1 = *maptest[1];
+
+    maptest.insert({1, test1});
+
+    std::cout << "size " << maptest.size() << std::endl;
+
+    delete maptest[1];
+    std::cout << "size " << maptest.size() << std::endl;
 
     str.replace(20, str.find_last_of("/")-20, std::to_string(65));
 

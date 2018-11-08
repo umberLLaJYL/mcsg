@@ -12,20 +12,6 @@
 #include "serial/serial.h"
 #include "../../json/rapidjson/document.h"
 
-class _HardwareController {
-private:
-
-public:
-    _HardwareController() {
-
-    }
-    ~_HardwareController() {
-
-    }
-
-    virtual bool execute(const std::string &) = 0;
-};
-
 
 class _ControllerRegister {
 private:
@@ -33,18 +19,6 @@ private:
 public:
     _ControllerRegister(/* args */) { }
     ~_ControllerRegister() { }
-};
-
-
-class Actor {
-private:
-
-protected:
-
-public:
-    Actor(/* args */) { }
-    ~Actor() { }
-
 };
 
 class Initializer {

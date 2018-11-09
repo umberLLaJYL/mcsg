@@ -1,20 +1,30 @@
-#ifndef _PINCONTROLLER_H
-#define _PINCONTROLLER_H
+#if !defined(_GPIOController_)
+#define _GPIOController_
 
-#include <vector>
 #include <map>
 
-#include "../ResourceController.h"
-#include "../opController/GPIODirectionController/GPIODirectionController.h"
-#include "GPIOExporter.h"
+#include "res/GPIO.h"
 
 class GPIOController : public ResourceController {
 private:
     static const int registerFile;
-    static GPIODirectionController directionController;
-    // static GPIODValueController valueController;
-    // static GPIOIrqController irqController;
-    static GPIOExporter exporter;
+    static std::map<int, GPIO> GPIOList;
+
+    bool registerGPIO(const int idx) {
+
+    }
+
+    bool deregisterGPIO(const int idx) {
+
+    }
+
+    bool exportGPIO(const int idx) {
+
+    }
+
+    bool unexportGPIO(const int idx) {
+
+    }
 
 public:
     GPIOController() = default;
@@ -24,19 +34,21 @@ public:
 
     }
 
-    bool exportGPIO(const int idx) {
-        return this->exporter.exportGPIO(idx);
+    bool registerResource(Resource &res) override {
+
     }
 
-    bool unexportGPIO(const int idx) {
-        return this->exporter.unexportGPIO(idx);
+    bool deregisterResource(Resource &res) override {
+
     }
 
     bool setDirection(const int idx, const std::string &direction) {
-        return this->directionController.setDirection(idx, direction);
+        return this->GPIOList.find(idx)->;
+    }
+
+    const std::string &getDirection(const int idx) {
+        return this->GPIOList.getDirection(idx);
     }
 };
 
-GPIOController gpioController;
-
-#endif
+#endif // _GPIOController_

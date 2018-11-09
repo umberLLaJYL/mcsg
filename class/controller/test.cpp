@@ -19,20 +19,10 @@
 #define GPIODir "/sys/class/gpio/gpio/direction"
 #define PinAct(action) GPIODir#action
 
-const char *func()
+bool func(int i)
 {
-    std::string str;
-    
-    std::ifstream iodir((str = GPIODir) += std::to_string(66) += "/direction");
-    iodir >> str;
-
-    return str.c_str();
-}
-
-const bool func1(const int idx, const std::map<int, std::pair<int, std::string>> &table)
-{
-    auto element = table.find(idx);
-    return element != table.end();
+    bool b = false;
+    return !(i < 0) && b;
 }
 
 
@@ -55,9 +45,9 @@ public:
     //     return this->str;
     // }
 
-    const Test1 &operator = (const Test1 &) {
+    // const Test1 &operator = (const Test1 &) {
         
-    }
+    // }
 };
 
 
@@ -93,27 +83,12 @@ public:
 int main(int argc, char *argv[])
 {
     std::string str(GPIODir);
-    std::map<int, Test *> maptest;
 
-    // std::ofstream ofs("/sys/class/gpio/unexport");
+    if(func(1))
+        printf("aaa\n");
 
-    // device.addController<GPIOController>(controllerFactory.createController("fsw1.json"));
-
-    Test1 *test1 = new Test1;
-    Test2 *test2 = new Test2;
-
-    Test1 t1 = *maptest[1];
-
-    maptest.insert({1, test1});
-
-    std::cout << "size " << maptest.size() << std::endl;
-
-    delete maptest[1];
-    std::cout << "size " << maptest.size() << std::endl;
-
-    str.replace(20, str.find_last_of("/")-20, std::to_string(65));
-
-    std::cout << str << std::endl;
+    // if(1 && func(1))
+    //     printf("bbb\n");
 
     // if(write(fd, "88", 8) < 0)
     //     perror("w");

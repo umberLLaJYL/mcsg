@@ -6,9 +6,8 @@
 
 #include <string>
 
-#define WriteLen 8
+#define WRLen 8
 #define DirGPIO "/sys/class/gpio/gpio"
-#define DirGPIODirection "/sys/class/gpio/gpiox/direction"
 
 #define dirExport(action) DirGPIO#action
 
@@ -26,11 +25,11 @@ public:
     }
 
     bool exportGPIO(const int idx) {
-        return !(write(this->fileExport, std::to_string(idx).c_str(), WriteLen) < 0);
+        return !(write(this->fileExport, std::to_string(idx).c_str(), WRLen) < 0);
     }
 
     bool unexportGPIO(const int idx) {
-        return !(write(this->fileUnexport, std::to_string(idx).c_str(), WriteLen) < 0);
+        return !(write(this->fileUnexport, std::to_string(idx).c_str(), WRLen) < 0);
     }
 };
 

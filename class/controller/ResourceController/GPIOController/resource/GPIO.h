@@ -1,20 +1,20 @@
 #if !defined(_GPIO_)
 #define _GPIO_
 
-#include "../Resource.h"
-#include "../../controller/resController/GPIOController/GPIOController.h"
+#include "GPIOExporter.h"
+#include "../../IResource.h"
 
 class GPIO : public Resource {
 private:
     const int index;
-    static GPIOController _gpioController;
+    static GPIOExporter exporter;
 
 public:
     GPIO(const int idx) : index(idx) {
-        this->_gpioController.exportGPIO(idx);
+        this->exporter.exportGPIO(idx);
     }
     ~GPIO() {
-        this->_gpioController.unexportGPIO(this->index);
+        this->exporter.unexportGPIO(this->index);
     }
 
     bool output() {

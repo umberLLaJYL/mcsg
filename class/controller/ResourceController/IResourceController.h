@@ -1,9 +1,7 @@
 #if !defined(_ResController_)
 #define _ResController_
 
-#include <string>
-
-#include "../../resource/Resource.h"
+#include "IResource.h"
 
 class ResourceController {
 private:

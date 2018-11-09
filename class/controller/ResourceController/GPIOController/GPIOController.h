@@ -3,7 +3,7 @@
 
 #include <map>
 
-#include "res/GPIO.h"
+#include "resource/GPIO.h"
 
 class GPIOController : public ResourceController {
 private:

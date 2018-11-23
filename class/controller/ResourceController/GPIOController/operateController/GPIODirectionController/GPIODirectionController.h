@@ -3,29 +3,19 @@
 
 #include <string>
 
-#include "../OperatorController.h"
-#include "GPIODirectionSeter.h"
-#include "GPIODirectionGeter.h"
+#include "../../../IResourceOperationController.h"
+#include "GPIODirectionOperator/GPIODirectionSeter.h"
+#include "GPIODirectionOperator/GPIODirectionGeter.h"
 
-class GPIODirectionController : public OperatorController {
+class GPIODirectionController : public IResourceOperationController {
 private:
-    static GPIODirectionSeter directionSeter;
-    static GPIODirectionGeter directionGeter;
 
 public:
-    GPIODirectionController() {
-
+    GPIODirectionController(const std::string &idx, Object(IResourceOperationSeter)seter, Object(IResourceOperationGeter)geter) : IResourceOperationController(idx) {
+        
     }
     ~GPIODirectionController() {
 
-    }
-
-    bool setDirection(const int idx, const std::string &direction) {
-        return this->directionSeter.setDirection(idx, direction);
-    }
-
-    const std::string &getDirection(const int idx) {
-        return this->directionGeter.getDirection(idx);
     }
 };
 

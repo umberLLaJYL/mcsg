@@ -3,33 +3,23 @@
 
 #include <map>
 
-#include "../../FileOperator.h"
+#include "../../../../IResourceOperationSeter.h"
 
-class GPIODirectionSeter : public FileOperator {
+class GPIODirectionSeter : public IResourceOperationSeter {
 private:
-    static std::map<int, int> flieList;
+    int fileDirection;
 
 public:
-    GPIODirectionSeter() {
-
+    GPIODirectionSeter(const std::string &idx) {
+        std::string dir;
+        fileDirection = open(this->_setDirectory(dir, idx, "direction").c_str(), O_WRONLY);
     }
     ~GPIODirectionSeter() {
-        for(auto element : this->flieList)
-            close(element.second);
+        close(this->fileDirection);
     }
 
-    bool insert(const int idx) {
-        int fileDirection = open(this->_setDirectory(idx).c_str(), O_WRONLY);
-        return fileDirection < 0 ? false : this->flieList.insert({idx, fileDirection}).second;
-    }
-
-    bool remove(const int idx) {
-        close(this->flieList.find(idx)->second);
-        return this->flieList.erase(idx) == 1;
-    }
-
-    bool setDirection(const int idx, const std::string &direction) {
-        return!(write(this->flieList.find(idx)->second, direction.c_str(), WRLen) < 0);
+    bool set(const std::string &direction) override {
+        return !(write(this->fileDirection, direction.c_str(), WRLen) < 0);
     }
 };
 

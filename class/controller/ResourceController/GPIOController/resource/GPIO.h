@@ -1,60 +1,25 @@
 #if !defined(_GPIO_)
 #define _GPIO_
 
-#include "GPIOExporter.h"
 #include "../../IResource.h"
 
-class GPIO : public Resource {
+class GPIO : public IResource {
 private:
-    const int index;
-    static GPIOExporter exporter;
 
 public:
-    GPIO(const int idx) : index(idx) {
-        this->exporter.exportGPIO(idx);
+    GPIO(const std::string &idx) : IResource(idx) {
+
     }
     ~GPIO() {
-        this->exporter.unexportGPIO(this->index);
-    }
-
-    bool output() {
-        return this->_gpioController.setDirection(this->index, "out");
-    }
-    bool input() {
-        return this->_gpioController.setDirection(this->index, "in");
-    }
-    bool setDirection(const std::string &direction) {
-        return this->_gpioController.setDirection(this->index, direction);
-    }
-
-    bool pullUp() {
-
-    }
-    bool pullDown() {
-
-    }
-    bool setValue(const char *value) {
 
     }
 
-    bool irqNone();
-    bool irqRising();
-    bool irqFalling();
-    bool irqBoth();
-    bool setIrq(const char *irq) {
-
+    bool set(const std::string &idx, const std::string &operation) override {
+        return this->_set(idx, operation);
     }
 
-    int getValue() {
+    const std::string &get(const std::string &idx) override {
 
-    }
-
-    const std::string &getDirection() {
-        return this->_gpioController.getDirection(this->index);
-    }
-
-    const std::string &getIrq() {
-        
     }
 };
 

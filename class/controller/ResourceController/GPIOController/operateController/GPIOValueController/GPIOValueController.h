@@ -1,21 +1,31 @@
 #if !defined(_GPIOValueController_)
 #define _GPIOValueController_
 
-#include "../OperatorController.h"
+#include <string>
 
-class GPIOValueController : public OperatorController {
+#include "../../../IResourceOperatorController.h"
+#include "GPIOValueOperator/GPIOValueSeter.h"
+#include "GPIOValueOperator/GPIOValueGeter.h"
+
+class GPIOValueController : public IOperatorController {
 private:
-    
+    GPIOValueSeter valueSeter;
+    GPIOValueSeter valueGeter;
+
 public:
-    GPIOValueController() {
+    GPIOValueController(const std::string &idx) : valueSeter(idx), valueGeter(idx) {
 
     }
     ~GPIOValueController() {
 
     }
 
-    bool setValue(const int idx) {
+    bool setDirection(const std::string &value) {
+        return this->valueSeter.setDirection(value);
+    }
 
+    const std::string &getDirection() {
+        return this->valueSeter.getDirection();
     }
 };
 

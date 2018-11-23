@@ -1,23 +1,19 @@
-#if !defined(_ResController_)
-#define _ResController_
+#if !defined(_IResourceController_)
+#define _IResourceController_
 
-#include "IResource.h"
+#include "IResourceRegister.h"
 
-class ResourceController {
+class IResourceController {
 private:
-    static std::map<int, Resource*> resourceList;
+    Object(IResourceRegister) resRegister;
 
 public:
-    ResourceController() {
+    IResourceController() {
 
     }
-    ~ResourceController() {
-
-    }
+    virtual ~IResourceController() = 0;
 
     virtual bool execute(const std::string &) = 0;
-    virtual bool registerResource(Resource &res) = 0;
-    virtual bool deregisterResource(Resource &res) = 0;
 };
 
-#endif // _ResController_
+#endif // _IResourceController_

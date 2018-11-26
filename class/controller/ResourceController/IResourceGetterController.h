@@ -5,8 +5,8 @@
 
 #include "MrcObject.h"
 
-#include "IResourceOperationSeter.h"
-#include "IResourceOperationGeter.h"
+#include "IResourceOperationSetter.h"
+#include "IResourceOperationGetter.h"
 
 class IResourceGetterController {
 private:
@@ -25,7 +25,7 @@ public:
         return this->operationGeterList.insert({idx, geter}).second;
     }
 
-    bool get(const std::string &idx, const std::string &operation) {
+    const std::string &get(const std::string &operation) {
 
     }
 };

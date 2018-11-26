@@ -1,20 +1,20 @@
-#if !defined(_GPIODirectionSeter_)
-#define _GPIODirectionSeter_
+#if !defined(_GPIODirectionSetter_)
+#define _GPIODirectionSetter_
 
 #include <map>
 
-#include "../../../../IResourceOperationSeter.h"
+#include "../../IResourceSetter.h"
 
-class GPIODirectionSeter : public IResourceOperationSeter {
+class GPIODirectionSetter : public IResourceSetter {
 private:
     int fileDirection;
 
 public:
-    GPIODirectionSeter(const std::string &idx) {
+    GPIODirectionSetter(const std::string &idx) {
         std::string dir;
         fileDirection = open(this->_setDirectory(dir, idx, "direction").c_str(), O_WRONLY);
     }
-    ~GPIODirectionSeter() {
+    ~GPIODirectionSetter() {
         close(this->fileDirection);
     }
 
@@ -23,4 +23,4 @@ public:
     }
 };
 
-#endif // _GPIODirectionSeter_
+#endif // _GPIODirectionSetter_

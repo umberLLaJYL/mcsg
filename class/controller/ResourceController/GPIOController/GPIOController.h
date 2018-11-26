@@ -1,7 +1,7 @@
 #if !defined(_GPIOController_)
 #define _GPIOController_
 
-#include "resource/GPIO.h"
+#include "GPIO.h"
 #include "GPIORegister/GPIORegister.h"
 #include "../IResourceController.h"
 

@@ -11,16 +11,17 @@
 class IResource {
 private:
     const std::string index;
+
     MrcObject<IResourceSetterController> setter;
     MrcObject<IResourceGetterController> getter;
 
 protected:
-    bool _set(const std::string &idx, const std::string &operation) {
-        return this->setter->set(idx, operation);
+    bool _set(const std::string &parameter, const std::string &argument) {
+        return this->setter->set(parameter, argument);
     }
 
-    const std::string &_get(const std::string &idx) {
-        // return this->operationController->get(idx);
+    const std::string &_get(const std::string &parameter) {
+        return this->getter->get(parameter);
     }
 
 public:

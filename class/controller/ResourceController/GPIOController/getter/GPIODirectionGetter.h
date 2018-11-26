@@ -1,7 +1,7 @@
 #if !defined(_GPIODirectionGeter_)
 #define _GPIODirectionGeter_
 
-#include "../../../../IResourceOperationGeter.h"
+#include "../../../../IResourceOperationGetter.h"
 
 class GPIODirectionGeter : public IResourceOperationGeter {
 private:

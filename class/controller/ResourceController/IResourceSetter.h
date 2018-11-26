@@ -1,5 +1,5 @@
-#if !defined(_IResourceOperationSeter_)
-#define _IResourceOperationSeter_
+#if !defined(_IResourceSetter_)
+#define _IResourceSetter_
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -16,7 +16,7 @@
 #define WritePos 20
 #endif // WritePos
 
-class IResourceOperationSeter {
+class IResourceSetter {
 private:
     
 protected:
@@ -26,14 +26,14 @@ protected:
     }
 
 public:
-    IResourceOperationSeter() {
+    IResourceSetter() {
 
     }
-    virtual ~IResourceOperationSeter() {
+    virtual ~IResourceSetter() {
 
     }
 
     virtual bool set(const std::string &) = 0;
 };
 
-#endif // _IResourceOperationSeter_
+#endif // _IResourceSetter_

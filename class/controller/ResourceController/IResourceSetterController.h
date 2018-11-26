@@ -5,13 +5,19 @@
 
 #include "MrcObject.h"
 
-#include "IResourceOperationSeter.h"
-#include "IResourceOperationGeter.h"
+#include "IResourceSetter.h"
+#include "IResourceGetter.h"
 
 class IResourceSetterController {
 private:
-    std::map<std::string, MrcObject<IResourceOperationSeter>> operationSeterList;
-    std::map<std::string, MrcObject<IResourceOperationSeter>>::iterator _seter;
+    std::map<std::string, MrcObject<IResourceSetter>> operationSetterList;
+    std::map<std::string, MrcObject<IResourceSetter>>::iterator _setter;
+
+protected:
+    bool _set(const std::string &idx, const std::string &operation) {
+        return (this->_setter = this->operationSetterList.find(idx)) == this->operationSetterList.end() ?
+            false : this->_setter->second->set(operation);
+    }
 
 public:
     IResourceSetterController() {
@@ -21,18 +27,15 @@ public:
 
     }
 
-    bool addSetter(std::string &idx, MrcObject<IResourceOperationSeter> seter) {
-        return this->operationSeterList.insert({idx, seter}).second;
+    bool addSetter(std::string &idx, MrcObject<IResourceOperationSetter> seter) {
+        return this->operationSetterList.insert({idx, seter}).second;
     }
 
     bool removeSetter(std::string &idx) {
-        return this->operationSeterList.erase(idx) == 1;
+        return this->operationSetterList.erase(idx) == 1;
     }
 
-    bool set(const std::string &idx, const std::string &operation) {
-        return (this->_seter = this->operationSeterList.find(idx)) == this->operationSeterList.end() ?
-            false : this->_seter->second->set(operation);
-    }
+    virtual bool set(const std::string &, const std::string &) = 0;
 };
 
 #endif // _IResourceSetterController_

@@ -1,7 +1,7 @@
 #if !defined(_GPIO_)
 #define _GPIO_
 
-#include "../../IResource.h"
+#include "../IResource.h"
 
 class GPIO : public IResource {
 public:

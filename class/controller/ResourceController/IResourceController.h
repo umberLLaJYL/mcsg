@@ -5,7 +5,7 @@
 
 class IResourceController {
 private:
-    Object(IResourceRegister) resRegister;
+    MrcObject<IResourceRegister> resRegister;
 
 public:
     IResourceController() {

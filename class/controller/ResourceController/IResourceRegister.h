@@ -3,16 +3,16 @@
 
 #include <map>
 
-#include "Object.h"
+#include "MrcObject.h"
 
 class IResourceRegister {
 private:
     static int fileRegister;
     
 protected:
-    static std::map<std::string, Object(IResource)> resourceList;
+    static std::map<std::string, MrcObject<IResource>> resourceList;
 
-    bool addResource(Object(IResource) res) {
+    bool addResource(MrcObject<IResource> res) {
         this->resourceList.insert({res->getIndex(), res});
     }
 
@@ -29,7 +29,7 @@ public:
         
     }
 
-    virtual bool registerResource(Object(IResource)) = 0;
+    virtual bool registerResource(MrcObject<IResource>) = 0;
     virtual bool deregisterResource(const std::string &) = 0;
 };
 

@@ -24,7 +24,7 @@ public:
 
     template<class ProductType>
     ProductType create(const std::string &idx) {
-        
+
     }
 };
 

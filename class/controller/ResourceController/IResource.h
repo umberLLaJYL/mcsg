@@ -4,21 +4,23 @@
 #include <string>
 #include <vector>
 
-#include "Object.h"
-#include "IResourceOperationController.h"
+#include "MrcObject.h"
+#include "IResourceSetterController.h"
+#include "IResourceGetterController.h"
 
 class IResource {
 private:
     const std::string index;
-    Object(IResourceOperationController) operationController;
+    MrcObject<IResourceSetterController> setter;
+    MrcObject<IResourceGetterController> getter;
 
 protected:
     bool _set(const std::string &idx, const std::string &operation) {
-        return this->operationController->set(idx, operation);
+        return this->setter->set(idx, operation);
     }
 
-    const std::string &_get(const std::string &operation) {
-        return this->operationController->get();
+    const std::string &_get(const std::string &idx) {
+        // return this->operationController->get(idx);
     }
 
 public:

@@ -4,8 +4,6 @@
 #include "../../IResource.h"
 
 class GPIO : public IResource {
-private:
-
 public:
     GPIO(const std::string &idx) : IResource(idx) {
 
@@ -14,12 +12,12 @@ public:
 
     }
 
-    bool set(const std::string &idx, const std::string &operation) override {
-        return this->_set(idx, operation);
+    bool set(const std::string &parameter, const std::string &argument) override {
+        return this->_set(parameter, argument);
     }
 
-    const std::string &get(const std::string &idx) override {
-
+    const std::string &get(const std::string &parameter) override {
+        // return this->_get(parameter);
     }
 };
 

@@ -74,6 +74,7 @@
         "__string": "cpp",
         "atomic": "cpp",
         "__memory": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "set": "cpp"
     }
 }

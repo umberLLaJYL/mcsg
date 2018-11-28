@@ -5,13 +5,12 @@
 
 #include "MrcObject.h"
 
-#include "IResourceOperationSetter.h"
-#include "IResourceOperationGetter.h"
+#include "IResourceGetter.h"
 
 class IResourceGetterController {
 private:
-    std::map<std::string, MrcObject<IResourceOperationGeter>> operationGeterList;
-    std::map<std::string, MrcObject<IResourceOperationGeter>>::iterator _geter;
+    std::map<std::string, MrcObject<IResourceGetter>> operationGeterList;
+    std::map<std::string, MrcObject<IResourceGetter>>::iterator _geter;
 
 public:
     IResourceGetterController() {
@@ -21,7 +20,7 @@ public:
 
     }
 
-    bool addGetter(std::string &idx, MrcObject<IResourceOperationGeter> geter) {
+    bool addGetter(std::string &idx, MrcObject<IResourceGetter> geter) {
         return this->operationGeterList.insert({idx, geter}).second;
     }
 

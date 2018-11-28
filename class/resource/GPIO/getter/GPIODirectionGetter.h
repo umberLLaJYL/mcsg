@@ -1,9 +1,9 @@
 #if !defined(_GPIODirectionGeter_)
 #define _GPIODirectionGeter_
 
-#include "../../../../IResourceOperationGetter.h"
+#include "../../IResourceGetter.h"
 
-class GPIODirectionGeter : public IResourceOperationGeter {
+class GPIODirectionGeter : public IResourceGetter {
 private:
     std::string _directory;
     std::string _direction;
@@ -12,13 +12,13 @@ private:
         int fileDirection = open(this->_directory.c_str(), O_WRONLY);
         char fileContent[8];
         if(!(fileDirection < 0))
-            return read(fileDirection, fileContent, WRLen) < 0 ?
+            return read(fileDirection, fileContent, WriteLen) < 0 ?
                 this->_direction.assign("error") :
                 this->_direction.assign(fileContent);
     }
 
 public:
-    GPIODirectionGeter(const std::string &idx) : IResourceOperationGeter(idx) {
+    GPIODirectionGeter(const std::string &idx) {
         this->_setDirectory(this->_directory, idx, "direction");
     }
     ~GPIODirectionGeter() {

@@ -6,14 +6,14 @@
 
 #include <string>
 
-class IResourceGeter {
+class IResourceGetter {
 private:
 
 public:
-    IResourceGeter(const std::string &) {
+    IResourceGetter() {
 
     }
-    virtual ~IResourceGeter() {
+    virtual ~IResourceGetter() {
 
     }
 

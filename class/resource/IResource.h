@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "MrcObject.h"
+#include "../MrcObject.h"
 #include "IResourceSetterController.h"
 #include "IResourceGetterController.h"
 
@@ -25,7 +25,7 @@ protected:
     }
 
 public:
-    IResource(const std::string &idx) : index(idx) {
+    IResource(const std::string &idx, MrcObject<IResourceSetterController>, MrcObject<IResourceGetterController>) : index(idx) {
 
     }
     virtual ~IResource() = default;

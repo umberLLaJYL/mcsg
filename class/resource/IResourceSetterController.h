@@ -4,9 +4,7 @@
 #include <map>
 
 #include "MrcObject.h"
-
 #include "IResourceSetter.h"
-#include "IResourceGetter.h"
 
 class IResourceSetterController {
 private:
@@ -27,7 +25,7 @@ public:
 
     }
 
-    bool addSetter(std::string &idx, MrcObject<IResourceOperationSetter> seter) {
+    bool addSetter(std::string &idx, MrcObject<IResourceSetter> seter) {
         return this->operationSetterList.insert({idx, seter}).second;
     }
 

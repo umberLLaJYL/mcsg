@@ -1,10 +1,11 @@
-// #include "GPIOController.h"
-// #include "test.h"
+#include "ITest.h"
 
-// #include <dlfcn.h>
+#include <dlfcn.h>
 
 #include <unistd.h>
 #include <fcntl.h>
+
+// #include <stdexcept>
 
 #include <vector>
 #include <iostream>
@@ -14,21 +15,22 @@
 
 int main(int argc, char const *argv[])
 {
-    char buf1[4096], buf2[4096];
+    void *handle = dlopen("./libtest.so", RTLD_NOW);
+    if(handle == NULL) {
+        printf("depoen: %s\n", dlerror());
+        return 1;
+    }
 
-    int fd1 = open("./test.json", O_RDONLY);
-    int fd2 = dup(fd1);
+    ITest *ctest = (ITest *)dlsym(handle, "test_g");
+    const char *dlmsg = dlerror();
+    if(dlmsg != NULL) {
+        printf("dlsym: %s\n", dlmsg);
+        dlclose(handle);
+        return 1;
+    }
+    dlclose(handle);
 
-    read(fd1, buf1, 4096);
-    std::cout << "fd1: " << buf1 << std::endl;
-
-    lseek(fd2, 0, SEEK_SET);
-    close(fd1);
-
-    if(read(fd2, buf2, 4096) <= 0)
-        perror("fd2");
-    else
-        std::cout << "fd2: " << buf2 << std::endl;
+    ctest->show("svnlsjnvljsnlvfnzbgk");
 
     return 0;
 }

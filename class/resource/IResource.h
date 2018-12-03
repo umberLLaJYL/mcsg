@@ -1,40 +1,38 @@
 #if !defined(_IResource_)
 #define _IResource_
 
-#include <string>
 #include <vector>
 
-#include "../MrcObject.h"
+#include "IBaseResource.h"
 #include "IResourceSetterController.h"
 #include "IResourceGetterController.h"
 
-class IResource {
+class IResource : public IBaseResource {
 private:
-    const std::string index;
-
-    MrcObject<IResourceSetterController> setter;
-    MrcObject<IResourceGetterController> getter;
+    MrcObject<IResourceSetterController> setterController;
+    MrcObject<IResourceGetterController> getterController;
 
 protected:
     bool _set(const std::string &parameter, const std::string &argument) {
-        return this->setter->set(parameter, argument);
+        return this->setterController->set(parameter, argument);
     }
 
     const std::string &_get(const std::string &parameter) {
-        return this->getter->get(parameter);
+        return this->getterController->get(parameter);
     }
 
 public:
-    IResource(const std::string &idx, MrcObject<IResourceSetterController>, MrcObject<IResourceGetterController>) : index(idx) {
+    IResource(const std::string &idx) : IBaseResource::IBaseResource(idx) {
 
     }
     virtual ~IResource() = default;
 
-    virtual bool set(const std::string &, const std::string &) = 0;
-    virtual const std::string &get(const std::string &) = 0;
+    void bindSetterController(MrcObject<IResourceSetterController> _setterController) {
+        this->setterController = std::move(_setterController);
+    }
 
-    const std::string &getIndex() const {
-        return this->index;
+    void bindGetterController(MrcObject<IResourceGetterController> _getterController) {
+        this->getterController = std::move(_getterController);
     }
 };
 

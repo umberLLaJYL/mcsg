@@ -1,16 +1,10 @@
 #if !defined(_TEST_)
 #define _TEST_
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
-#include <map>
-#include <memory>
+#include "ITest.h"
 
-class Test {
+class Test : public ITest{
 private:
-
 public:
     Test() {
 
@@ -19,7 +13,12 @@ public:
 
     }
 
-    virtual void show(const std::string &) = 0;
+    void show(const std::string &str) override {
+        std::cout << "Test: " << str << std::endl;
+    }
+
 };
+
+Test test_g;
 
 #endif // _TEST_

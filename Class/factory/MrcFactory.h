@@ -5,9 +5,9 @@
 
 #include "DirectoryReader.h"
 
-class MrcFactory : private IMrcFactory {
+class MrcFactory : public IMrcFactory {
 private:
-
+    MrcObject<DirectoryReader> directoryReader;
 
 public:
     MrcFactory() {
@@ -17,8 +17,8 @@ public:
 
     }
 
-    MrcObject<IMrController> create(const std::string &type, const std::string &idx) override {
-
+    MrcObject<IMrController> create(const std::string &type) override {
+        
     }
 };
 

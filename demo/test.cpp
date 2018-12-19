@@ -35,16 +35,20 @@ public:
     const std::string &getFileName() noexcept {
         return (this->fileName = this->dirInfo->d_name);
     }
+
+    const std::string &getFileList() {
+
+    }
 };
 
 int main(int argc, char const *argv[])
 {
-    DirectoryReader dr(".");
+    DirectoryReader dr(".dsdddd");
 
     while(dr.readDirectory()) {
         std::cout << dr.getFileName() << std::endl;
     }
-    std::cout << dr.getFileName() << std::endl;
+    std::cout << "after throw" << std::endl;
     // DIR *dir = opendir(".");
     // if(dir == NULL)
     //     perror("opendir");

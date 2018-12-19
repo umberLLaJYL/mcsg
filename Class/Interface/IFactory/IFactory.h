@@ -1,8 +1,6 @@
 #if !defined(_IFACTORY_)
 #define _IFACTORY_
 
-#include <dlfcn.h>
-
 #include <map>
 #include <string>
 

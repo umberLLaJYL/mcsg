@@ -13,10 +13,6 @@ class IMrcFactory {
 private:
     std::map<std::string, MrcObject<IResourceFactory>> resFactory;
 
-    bool addFactory(const std::string &) {
-
-    }
-
 public:
     IMrcFactory() {
 
@@ -25,11 +21,15 @@ public:
 
     }
 
-    bool initialize(const std::string &launchFile) {
+    // virtual bool initialize(const std::string &launchFile) {
+        
+    // }
 
+    bool addFactory(MrcObject<IResourceFactory> &factory) {
+        return this->resFactory.insert({"", factory}).second;
     }
 
-    virtual MrcObject<IMrController> create(const std::string &, const std::string &) = 0;
+    virtual MrcObject<IMrController> create(const std::string &) = 0;
 };
 
 #endif // _IMrcFactory_

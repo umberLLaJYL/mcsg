@@ -1,6 +1,6 @@
 // #include "ITest.h"
 
-// #include <dlfcn.h>
+#include <dlfcn.h>
 
 #include <unistd.h>
 #include <fcntl.h>

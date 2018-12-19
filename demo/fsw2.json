@@ -1,19 +1,9 @@
 {
-    "rescouce": {
-        "GPIO": {
-            "36": "out",
-            "64": "in",
-            "65": "in",
-            "66": "in",
-            "67": "in"            
-        }
-    },
-    "sequence": {
-        "<BP01_S_1>": {
-            "GPIO": "1"
-        },
-        "<BP01_S_0>": {
-            "GPIO": "17"
-        }
+    "mapping": {
+        "Pin1": "GPIO,36,out",
+        "Pin2": "GPIO,64,out",
+        "Pin3": "GPIO,65,out",
+        "Pin4": "GPIO,66,out",
+        "Pin5": "GPIO,67,out"
     }
 }

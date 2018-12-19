@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "MrcContainer.h"
 #include "../../../library/json/rapidjson/document.h"
 
 #define MrcObject std::shared_ptr  

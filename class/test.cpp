@@ -8,12 +8,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-// #include "pin/pin.h"
-// #include "adc/adc.h"
-// #include "dac/dac.h"
-// #include "serial/serial.h"
-// #include "../../json/rapidjson/document.h"
-
 // using namespace rapidjson;
 
 #define GPIODir "/sys/class/gpio/gpio/direction"

@@ -1,12 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <unistd.h>
+#if !defined(_DirectoryReader_)
+#define _DirectoryReader_
 
-#include <string.h>
-#include <ostream>
+#include <dirent.h>
+
+#include <string>
 #include <iostream>
-#include <stdexcept>
+
+#include "../../Library/json/rapidjson/document.h"
 
 typedef struct dirent DirectoryInfo;
 
@@ -15,7 +15,7 @@ private:
     DIR *directory;
     DirectoryInfo *dirInfo;
     std::string fileName;
-    // rapidjson::Document list;
+    rapidjson::Document list;
 
 public:
     DirectoryReader(const std::string &dir) try : directory(NULL), dirInfo(NULL) {
@@ -35,26 +35,10 @@ public:
     const std::string &getFileName() noexcept {
         return (this->fileName = this->dirInfo->d_name);
     }
+
+    const std::string &getFileList() {
+
+    }
 };
 
-int main(int argc, char const *argv[])
-{
-    DirectoryReader dr(".");
-
-    while(dr.readDirectory()) {
-        std::cout << dr.getFileName() << std::endl;
-    }
-    std::cout << dr.getFileName() << std::endl;
-    // DIR *dir = opendir(".");
-    // if(dir == NULL)
-    //     perror("opendir");
-
-    // struct dirent *cont;
-    // while((cont = readdir(dir)) != NULL) {
-    //     if(strcmp(cont->d_name, ".") == 0 || strcmp(cont->d_name, "..") == 0)
-    //         continue;
-    //     else
-    //         printf("%s: %d\n", cont->d_name, cont->d_type);
-    // }
-    return 0;
-}
+#endif // _DirectoryReader_

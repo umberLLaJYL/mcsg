@@ -3,19 +3,19 @@
 
 // #include "../../json/rapidjson/document.h"
 
-// using namespace rapidjson;
-
-GPIOFactory gpioFactory;
-GPIOController gpioController;
-
 int main(int argc, char *argv[])
 {
-    gpioController.addResource(gpioFactory.create("66"));
+    MrcDevice.addController(MrcFactory.create("fsw1"));
+    MrcFactory.create("pd1");
 
-    MrcDevice.addController(ControllerFactory.create("fsw2.json"));
+    ResourceFactory.create("GPIO", "66");
+    ResourceFactory.create("ADC", "adc1");
+
+    ResourceSetterControllerFactory.create("GPIOSetterController");
+    ResourceSetterFactory.create("GPIOValueSetter", "66");
 
     if(MrcDevice("pd1") < -30.00)
-        MrcDevice.controller("fsw1").execute("<BP01_S_1>");
+        MrcDevice["fsw1"].execute("<BP01_S_1>");
 
     return 0;
 }

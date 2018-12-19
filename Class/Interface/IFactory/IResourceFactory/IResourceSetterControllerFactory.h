@@ -1,8 +1,7 @@
 #if !defined(_IResourceSetterControllerFactory_)
 #define _IResourceSetterControllerFactory_
 
-#include "IResourceSetter.h"
-#include "../../class/resource/IResourceSetterController.h"
+#include "../../IResource/IResourceSetterController.h"
 
 class IResourceSetterControllerFactory {
 private:

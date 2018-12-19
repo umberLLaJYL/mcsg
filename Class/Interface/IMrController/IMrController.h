@@ -4,20 +4,19 @@
 #include <map>
 #include <string>
 
-#include "class/MrcObject.h"
-#include "class/ResourceController/IResourceController.h"
+#include "../../MrcObject.h"
 
-#define DirMrcController "./MrcController.json"
+#define DirMrController "./MrController.json"
 
-class IMrcController {
+class IMrController {
 private:
     std::map<std::string, MrcObject<IResourceController>> resController;
 
 public:
-    IMrcController() {
+    IMrController() {
 
     }
-    virtual ~IMrcController() {
+    virtual ~IMrController() {
 
     }
 

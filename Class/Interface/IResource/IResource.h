@@ -1,14 +1,13 @@
 #if !defined(_IResource_)
 #define _IResource_
 
-#include <vector>
-
-#include "IBaseResource.h"
 #include "IResourceSetterController.h"
 #include "IResourceGetterController.h"
 
-class IResource : public IBaseResource {
+class IResource {
 private:
+    const std::string index;
+
     MrcObject<IResourceSetterController> setterController;
     MrcObject<IResourceGetterController> getterController;
 
@@ -22,7 +21,7 @@ protected:
     }
 
 public:
-    IResource(const std::string &idx) : IBaseResource::IBaseResource(idx) {
+    IResource(const std::string &idx) : index(idx) {
 
     }
     virtual ~IResource() = default;
@@ -33,6 +32,13 @@ public:
 
     void bindGetterController(MrcObject<IResourceGetterController> _getterController) {
         this->getterController = std::move(_getterController);
+    }
+
+    virtual bool set(const std::string &, const std::string &) = 0;
+    virtual const std::string &get(const std::string &) = 0;
+
+    const std::string &getIndex() const noexcept {
+        return this->index;
     }
 };
 

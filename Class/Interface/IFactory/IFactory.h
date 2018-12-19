@@ -6,13 +6,16 @@
 #include <map>
 #include <string>
 
+#include "IResourceFactory/IResourceFactory.h"
 #include "IReader.h"
-#include "../class/MrcObject.h"
+#include "../Class/MrcObject.h"
 
 class IFactory {
 private:
     MrcObject<IReader> reader;
     
+protected:
+
 public:
     IFactory() {
 

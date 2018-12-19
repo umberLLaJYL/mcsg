@@ -2,7 +2,7 @@
 #define _IResourceFactory_
 
 #include "IResourceSetterControllerFactory.h"
-#include "../resource/IResource.h"
+#include "../../IResource/IResource.h"
 
 class IResourceFactory {
 private:
@@ -15,9 +15,9 @@ public:
 
     }
 
-    virtual MrcObject<IResource> create(const std::string &) = 0;
-    // virtual MrcObject<IResourceSetterController> createSetterController() = 0;
-    // virtual MrcObject<IResourceSetter> createSetter() = 0;
+    MrcObject<IResource> create(const std::string &idx) {
+        
+    }
 };
 
 #endif // _IResourceFactory_

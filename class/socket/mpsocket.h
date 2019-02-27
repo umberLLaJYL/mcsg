@@ -36,7 +36,6 @@ public:
     ~_MPSocket();
 
     explicit operator bool() const;
-    _MPSocket &operator = (Sock sock);
 
     StdSize Read(char *, StdSize);
     StdSize Write(const char *, StdSize);

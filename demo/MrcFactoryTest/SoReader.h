@@ -17,6 +17,12 @@ public:
     } catch(std::runtime_error error) {
         std::cout << error.what() << std::endl;
     }
+    SoReader(const std::string &soFile) try {
+        if((this->_handle = dlopen(soFile.c_str(), RTLD_LAZY)) == NULL)
+            throw std::runtime_error("MRC: can not open .so.");
+    } catch(std::runtime_error error) {
+        std::cout << error.what() << std::endl;
+    }
     ~SoReader() {
 
     }
@@ -25,7 +31,7 @@ public:
         return dlclose(this->_handle) == 0;
     }
 
-    void *fetchSharedObject(const std::string &symbol) {
+    void *fetchObject(const std::string &symbol) {
         return dlsym(this->_handle, symbol.c_str());
     }
 
